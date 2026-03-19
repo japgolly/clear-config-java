@@ -1,5 +1,6 @@
 package japgolly.clearconfig;
 
+import java.net.InetAddress;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -27,6 +28,17 @@ public interface ConfigDef<A> {
                 return new Either.Failure<>(new ErrorMsg("Invalid integer: " + s));
             }
         });
+
+    public static ConfigValueParser<InetAddress> inetAddress =
+        string.flatMap(s -> {
+            try {
+                return new Either.Success<>(InetAddress.getByName(s));
+            } catch (Exception e) {
+                return new Either.Failure<>(new ErrorMsg("Invalid InetAddress: " + s));
+            }
+        });
+
+    // =================================================================================================================
 
     public static <A, Z> ConfigDef<Z> apply1(ConfigDef<A> ca, Function<A, Z> f) {
         return sources -> ca.run(sources).map(f);
