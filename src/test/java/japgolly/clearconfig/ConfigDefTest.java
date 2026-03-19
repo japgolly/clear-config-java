@@ -80,4 +80,18 @@ public class ConfigDefTest {
             assertEquals(UnsatisfiedConfigException.PREFIX + "Missing key: host\nMissing key: port", e.getMessage());
         }
     }
+
+    @Test
+    public void multipleSources() throws UnknownHostException {
+        var source1 = ConfigSource.manual("test", Map.of(
+            "host", "127.0.0.1"
+        ));
+        var source2 = ConfigSource.manual("test", Map.of(
+            "port", "1234",
+            "host", "0.0.0.0"
+        ));
+        var sources = ConfigSources.of(source1, source2);
+        var result = configDefWithoutDefaults.run(sources);
+        assertSuccess(new HttpServer(1234, InetAddress.getByName("127.0.0.1")), result);
+    }
 }
