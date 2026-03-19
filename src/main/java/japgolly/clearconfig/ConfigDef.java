@@ -18,7 +18,6 @@ public interface ConfigDef<A> {
             List<ConfigSource> mappedSources = sources.sources().stream()
                 .map(s -> (ConfigSource) new ConfigSource() {
                     @Override public String name() { return s.name(); }
-                    @Override public java.util.Map<String, String> allConfig() { return s.allConfig(); }
                     @Override public String get(String key) { return s.get(f.apply(key)); }
                 })
                 .toList();

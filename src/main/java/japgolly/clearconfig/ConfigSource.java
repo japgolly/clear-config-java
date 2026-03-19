@@ -5,11 +5,7 @@ import java.util.Map;
 public interface ConfigSource {
 
     public String name();
-    public Map<String, String> allConfig();
-
-    public default String get(String key) {
-        return allConfig().get(key);
-    }
+    public String get(String key);
 
     public static ConfigSource manual(String name, Map<String, String> map) {
         return new ConfigSource() {
@@ -20,8 +16,8 @@ public interface ConfigSource {
             }
 
             @Override
-            public Map<String, String> allConfig() {
-                return map;
+            public String get(String key) {
+                return map.get(key);
             }
         };
     }
