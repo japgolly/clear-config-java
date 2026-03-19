@@ -1,6 +1,7 @@
 package japgolly.clearconfig;
 
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.Function;
 
 public interface ConfigSource {
@@ -25,7 +26,15 @@ public interface ConfigSource {
         };
     }
 
-    public static ConfigSource manual(String name, Map<String, String> map) {
+    // =================================================================================================================
+
+    public static final ConfigSource environment =
+        ofMap("Environment", System.getenv());
+
+    public static final ConfigSource systemProps =
+        ofProperties("System Properties", System.getProperties());
+
+    public static ConfigSource ofMap(String name, Map<String, String> map) {
         return new ConfigSource() {
 
             @Override
@@ -40,30 +49,18 @@ public interface ConfigSource {
         };
     }
 
-    public static ConfigSource environment = new ConfigSource() {
+    public static ConfigSource ofProperties(String name, Properties p) {
+        return new ConfigSource() {
 
-        @Override
-        public String name() {
-            return "Environment";
-        }
+            @Override
+            public String name() {
+                return name;
+            }
 
-        @Override
-        public String get(String key) {
-            return System.getenv(key);
-        }
-    };
-
-    public static ConfigSource systemProps = new ConfigSource() {
-
-        @Override
-        public String name() {
-            return "System Properties";
-        }
-
-        @Override
-        public String get(String key) {
-            return System.getProperty(key);
-        }
-    };
-
+            @Override
+            public String get(String key) {
+                return p.getProperty(key);
+            }
+        };
+    }
 }

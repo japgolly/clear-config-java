@@ -42,7 +42,7 @@ public class ConfigDefTest {
 
     @Test
     public void withoutDefaultsPass() throws UnknownHostException {
-        var source = ConfigSource.manual("test", Map.of(
+        var source = ConfigSource.ofMap("test", Map.of(
             "port", "1234 # This is a comment",
             "host", "127.0.0.1"
         ));
@@ -63,7 +63,7 @@ public class ConfigDefTest {
 
     @Test
     public void testMapKeys() {
-        var source = ConfigSource.manual("test", Map.of("blah.port", "1234"));
+        var source = ConfigSource.ofMap("test", Map.of("blah.port", "1234"));
         var sources = ConfigSources.of(source);
         var def = ConfigDef.integer.getOrUse("port", 8080).withKeyPrefix("blah.");
         var result = def.run(sources);
@@ -83,10 +83,10 @@ public class ConfigDefTest {
 
     @Test
     public void multipleSources() throws UnknownHostException {
-        var source1 = ConfigSource.manual("test", Map.of(
+        var source1 = ConfigSource.ofMap("test", Map.of(
             "host", "127.0.0.1"
         ));
-        var source2 = ConfigSource.manual("test", Map.of(
+        var source2 = ConfigSource.ofMap("test", Map.of(
             "port", "1234",
             "host", "0.0.0.0"
         ));
