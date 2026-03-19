@@ -3,6 +3,7 @@ package japgolly.clearconfig;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import japgolly.clearconfig.util.*;
 
@@ -26,6 +27,10 @@ public interface ConfigDef<A> {
                 return new Either.Failure<>(new ErrorMsg("Invalid integer: " + s));
             }
         });
+
+    public static <A, Z> ConfigDef<Z> apply1(ConfigDef<A> ca, Function<A, Z> f) {
+        return sources -> ca.run(sources).map(f);
+    }
 
     public static <A, B, Z> ConfigDef<Z> apply2(ConfigDef<A> ca, ConfigDef<B> cb, BiFunction<A, B, Z> f) {
         return sources -> {
