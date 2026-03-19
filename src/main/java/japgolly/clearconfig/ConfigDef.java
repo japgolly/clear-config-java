@@ -16,10 +16,7 @@ public interface ConfigDef<A> {
     public default ConfigDef<A> mapKeys(Function<String, String> f) {
         return sources -> {
             List<ConfigSource> mappedSources = sources.sources().stream()
-                .map(s -> (ConfigSource) new ConfigSource() {
-                    @Override public String name() { return s.name(); }
-                    @Override public String get(String key) { return s.get(f.apply(key)); }
-                })
+                .map(s -> s.mapKeyQueries(f))
                 .toList();
             return run(new ConfigSources(mappedSources));
         };

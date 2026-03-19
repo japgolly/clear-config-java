@@ -3,19 +3,20 @@ package japgolly.clearconfig;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import japgolly.clearconfig.util.*;
 
 public final class ConfigSources {
-    private final List<ConfigSource> _sources;
+    private final List<ConfigSource> sources;
 
     public List<ConfigSource> sources() {
-        return _sources;
+        return sources;
     }
 
     /** @param sources Highest priority first */
     public ConfigSources(List<ConfigSource> sources) {
-        this._sources =  Collections.unmodifiableList(sources);
+        this.sources = Collections.unmodifiableList(sources);
     }
 
     public <A> Either<ErrorMsg, Optional<A>> get(String key, ConfigValueParser<A> parser) {
@@ -27,6 +28,12 @@ public final class ConfigSources {
         }
         return new Either.Success<>(Optional.empty());
     }
+
+    public ConfigSources mapKeyQueries(Function<String, String> f) {
+        return new ConfigSources(sources.stream().map(s -> s.mapKeyQueries(f)).toList());
+    }
+
+    // =================================================================================================================
 
     public static ConfigSources of() {
         return new ConfigSources(List.of());

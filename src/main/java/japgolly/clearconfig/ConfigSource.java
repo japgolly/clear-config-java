@@ -1,24 +1,34 @@
 package japgolly.clearconfig;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
 
-public interface ConfigSource {
+public class ConfigSource {
+    private final String name;
+    private final Map<String, String> all;
 
-    public String name();
+    public ConfigSource(String name, Map<String, String> all) {
+        this.name = name;
+        this.all = all;
+    }
 
-    public String get(String key);
+    public String name() {
+        return name;
+    }
 
-    public default ConfigSource mapKeyQueries(Function<String, String> f) {
+    public Map<String, String> all() {
+        return all;
+    }
+
+    public String get(String key) {
+        return all().get(key);
+    }
+
+    public ConfigSource mapKeyQueries(Function<String, String> f) {
         var self = this;
-        return new ConfigSource() {
-
-            @Override
-            public String name() {
-                return self.name();
-            }
-
+        return new ConfigSource(name, all) {
             @Override
             public String get(String key) {
                 return self.get(f.apply(key));
@@ -35,32 +45,12 @@ public interface ConfigSource {
         ofProperties("System Properties", System.getProperties());
 
     public static ConfigSource ofMap(String name, Map<String, String> map) {
-        return new ConfigSource() {
-
-            @Override
-            public String name() {
-                return name;
-            }
-
-            @Override
-            public String get(String key) {
-                return map.get(key);
-            }
-        };
+        return new ConfigSource(name, map);
     }
 
     public static ConfigSource ofProperties(String name, Properties p) {
-        return new ConfigSource() {
-
-            @Override
-            public String name() {
-                return name;
-            }
-
-            @Override
-            public String get(String key) {
-                return p.getProperty(key);
-            }
-        };
+        var map = new HashMap<String, String>();
+        p.putAll(map);
+        return ofMap(name, map);
     }
 }
