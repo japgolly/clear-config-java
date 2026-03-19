@@ -2,6 +2,7 @@ package japgolly.clearconfig;
 
 import java.net.InetAddress;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -11,6 +12,19 @@ import japgolly.clearconfig.util.*;
 public interface ConfigDef<A> {
 
     public Either<Set<ErrorMsg>, A> run(ConfigSources sources);
+
+    public default ConfigDef<A> mapKeys(Function<String, String> f) {
+        return sources -> {
+            List<ConfigSource> mappedSources = sources.sources().stream()
+                .map(s -> (ConfigSource) new ConfigSource() {
+                    @Override public String name() { return s.name(); }
+                    @Override public java.util.Map<String, String> allConfig() { return s.allConfig(); }
+                    @Override public String get(String key) { return s.get(f.apply(key)); }
+                })
+                .toList();
+            return run(new ConfigSources(mappedSources));
+        };
+    }
 
     // =================================================================================================================
 
