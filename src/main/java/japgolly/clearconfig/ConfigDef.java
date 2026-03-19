@@ -29,6 +29,15 @@ public interface ConfigDef<A> {
         return mapKeys(s -> prefix + s);
     }
 
+    public default A runOrThrow(ConfigSources sources) throws UnsatisfiedConfigException {
+        return switch (run(sources)) {
+            case Either.Success<Set<ErrorMsg>, A> s ->
+                s.value();
+            case Either.Failure<Set<ErrorMsg>, A> f ->
+                throw new UnsatisfiedConfigException(f.failure());
+        };
+    }
+
     // =================================================================================================================
 
     public static ConfigValueParser<String> string =

@@ -69,4 +69,15 @@ public class ConfigDefTest {
         var result = def.run(sources);
         assertSuccess(1234, result);
     }
+
+    @Test
+    public void testRunOrThrow() {
+        var sources = ConfigSources.of();
+        try {
+            configDefWithoutDefaults.runOrThrow(sources);
+            org.junit.Assert.fail("Should have thrown an exception");
+        } catch (UnsatisfiedConfigException e) {
+            assertEquals(UnsatisfiedConfigException.PREFIX + "Missing key: host\nMissing key: port", e.getMessage());
+        }
+    }
 }
