@@ -40,4 +40,38 @@ public interface ConfigDef<A> {
                 return new Either.Failure<>(errors);
         };
     }
+
+    public static <A, B, C, Z> ConfigDef<Z> apply3(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, Function3<A, B, C, Z> f) {
+        return sources -> {
+            Set<ErrorMsg> errors = new HashSet<>();
+            var ea = ca.run(sources);
+            var eb = cb.run(sources);
+            var ec = cc.run(sources);
+            ea.foreachFailure(es -> errors.addAll(es));
+            eb.foreachFailure(es -> errors.addAll(es));
+            ec.foreachFailure(es -> errors.addAll(es));
+            if (errors.isEmpty())
+                return new Either.Success<>(f.apply(ea.getOrThrow(), eb.getOrThrow(), ec.getOrThrow()));
+            else
+                return new Either.Failure<>(errors);
+        };
+    }
+
+    public static <A, B, C, D, Z> ConfigDef<Z> apply4(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, Function4<A, B, C, D, Z> f) {
+        return sources -> {
+            Set<ErrorMsg> errors = new HashSet<>();
+            var ea = ca.run(sources);
+            var eb = cb.run(sources);
+            var ec = cc.run(sources);
+            var ed = cd.run(sources);
+            ea.foreachFailure(es -> errors.addAll(es));
+            eb.foreachFailure(es -> errors.addAll(es));
+            ec.foreachFailure(es -> errors.addAll(es));
+            ed.foreachFailure(es -> errors.addAll(es));
+            if (errors.isEmpty())
+                return new Either.Success<>(f.apply(ea.getOrThrow(), eb.getOrThrow(), ec.getOrThrow(), ed.getOrThrow()));
+            else
+                return new Either.Failure<>(errors);
+        };
+    }
 }
