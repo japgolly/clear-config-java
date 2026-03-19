@@ -65,7 +65,7 @@ public class ConfigDefTest {
     public void testMapKeys() {
         var source = ConfigSource.manual("test", Map.of("blah.port", "1234"));
         var sources = ConfigSources.of(source);
-        var def = ConfigDef.integer.getOrUse("port", 8080).mapKeys(s -> "blah." + s);
+        var def = ConfigDef.integer.getOrUse("port", 8080).withKeyPrefix("blah.");
         var result = def.run(sources);
         assertSuccess(1234, result);
     }

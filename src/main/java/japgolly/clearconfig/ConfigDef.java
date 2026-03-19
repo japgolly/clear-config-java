@@ -25,6 +25,10 @@ public interface ConfigDef<A> {
         };
     }
 
+    public default ConfigDef<A> withKeyPrefix(String prefix) {
+        return mapKeys(s -> prefix + s);
+    }
+
     // =================================================================================================================
 
     public static ConfigValueParser<String> string =
