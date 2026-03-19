@@ -19,5 +19,5 @@ public class UnsatisfiedConfigException extends Exception {
                 .collect(Collectors.joining("\n")));
     }
 
-    public static String PREFIX = "Unsatisfied configuration:\n";
+    public static final String PREFIX = "Unsatisfied configuration:\n";
 }

@@ -37,13 +37,13 @@ public interface ConfigDef<A> {
 
     // =================================================================================================================
 
-    public static ConfigValueParser<String> string =
+    public static final ConfigValueParser<String> string =
         s -> new Either.Success<>(s.replaceFirst("#.*", "").trim());
 
-    public static ConfigValueParser<String> stringRaw =
+    public static final ConfigValueParser<String> stringRaw =
         s -> new Either.Success<>(s);
 
-    public static ConfigValueParser<Integer> integer =
+    public static final ConfigValueParser<Integer> integer =
         string.flatMap(s -> {
             try {
                 return new Either.Success<>(Integer.parseInt(s));
@@ -52,7 +52,7 @@ public interface ConfigDef<A> {
             }
         });
 
-    public static ConfigValueParser<InetAddress> inetAddress =
+    public static final ConfigValueParser<InetAddress> inetAddress =
         string.flatMap(s -> {
             try {
                 return new Either.Success<>(InetAddress.getByName(s));
