@@ -2,6 +2,7 @@ package japgolly.clearconfig;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import japgolly.clearconfig.util.*;
@@ -45,4 +46,39 @@ public interface ConfigValueParser<A> {
         });
     }
 
+    public default <B> ConsumerDsl<A, B> consume() {
+        return new ConsumerDsl<>(this);
+    }
+
+    public static class ConsumerDsl<A, B> {
+        private final ConfigValueParser<A> self;
+
+        public ConsumerDsl(ConfigValueParser<A> self) {
+            this.self = self;
+        }
+
+        public ConfigDef<Consumer<B>> getOptional(String key, BiConsumer<B, Optional<A>> f) {
+            return sources -> self.get(key).run(sources).map(o -> b -> f.accept(b, o));
+        }
+
+        public ConfigDef<Consumer<B>> get(String key, BiConsumer<B, A> f) {
+            return getOptional(key, (b, o) -> {
+                if (o.isPresent())
+                    f.accept(b, o.get());
+            });
+        }
+
+        public ConfigDef<Consumer<B>> getOrUse(String key, A defaultValue, BiConsumer<B, A> f) {
+            return getOptional(key, (b, o) -> f.accept(b, o.orElseGet(() -> defaultValue)));
+        }
+
+        public ConfigDef<Consumer<B>> getOrParse(String key, String defaultValue, BiConsumer<B, A> f) {
+            return sources -> self.getOrParse(key, defaultValue).run(sources).map(a -> b -> f.accept(b, a));
+        }
+
+        public ConfigDef<Consumer<B>> need(String key, BiConsumer<B, A> f) {
+            return sources -> self.need(key).run(sources).map(a -> b -> f.accept(b, a));
+        }
+
+    }
 }

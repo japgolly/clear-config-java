@@ -1,10 +1,12 @@
 package japgolly.clearconfig;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import japgolly.clearconfig.util.*;
@@ -60,6 +62,32 @@ public interface ConfigDef<A> {
                 return new Either.Failure<>(new ErrorMsg("Invalid InetAddress: " + s));
             }
         });
+
+    // =================================================================================================================
+
+    @SafeVarargs
+    public static <A> ConfigDef<Consumer<A>> consume(ConfigDef<Consumer<A>>... fns) {
+        return sources -> {
+            final Set<ErrorMsg> errors = new HashSet<>();
+            final var consumers = new ArrayList<Consumer<A>>(fns.length);
+            for (var fn : fns) {
+                var res = fn.run(sources);
+                res.foreachFailure(errors::addAll);
+                if (res instanceof Either.Success<Set<ErrorMsg>, Consumer<A>> s) {
+                    consumers.add(s.value());
+                }
+            }
+            if (errors.isEmpty()) {
+                return new Either.Success<>(a -> {
+                    for (var c : consumers) {
+                        c.accept(a);
+                    }
+                });
+            } else {
+                return new Either.Failure<>(errors);
+            }
+        };
+    }
 
     // =================================================================================================================
 

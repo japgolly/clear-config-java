@@ -94,4 +94,27 @@ public class ConfigDefTest {
         var result = configDefWithoutDefaults.run(sources);
         assertSuccess(new HttpServer(1234, InetAddress.getByName("127.0.0.1")), result);
     }
+
+    class Settable {
+        public String w, x, y, z;
+    }
+
+    @Test
+    public void consumers() throws UnsatisfiedConfigException {
+        var configDef = ConfigDef.consume(
+            ConfigDef.string.<Settable>consume().get("w", (s, a) -> s.w = a),
+            ConfigDef.string.<Settable>consume().get("x", (s, a) -> s.x = a),
+            ConfigDef.string.<Settable>consume().getOrUse("y", "default", (s, a) -> s.y = a),
+            ConfigDef.string.<Settable>consume().getOrParse("z", "def #", (s, a) -> s.z = a)
+        );
+        var source = ConfigSource.ofMap("test", Map.of("x", "eks"));
+        var sources = ConfigSources.of(source);
+        var consumer = configDef.runOrThrow(sources);
+        var s = new Settable();
+        consumer.accept(s);
+        assertEquals(null, s.w);
+        assertEquals("eks", s.x);
+        assertEquals("default", s.y);
+        assertEquals("def", s.z);
+    }
 }
