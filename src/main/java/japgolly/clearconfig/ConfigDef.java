@@ -86,11 +86,11 @@ public interface ConfigDef<A> {
 
     // =================================================================================================================
 
-    public static <A, Z> ConfigDef<Z> apply1(ConfigDef<A> ca, Function<A, Z> f) {
+    public static <A, Z> ConfigDef<Z> apply(ConfigDef<A> ca, Function<A, Z> f) {
         return sources -> ca.run(sources).map(f);
     }
 
-    public static <A, B, Z> ConfigDef<Z> apply2(ConfigDef<A> ca, ConfigDef<B> cb, BiFunction<A, B, Z> f) {
+    public static <A, B, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, BiFunction<A, B, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -104,7 +104,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, Z> ConfigDef<Z> apply3(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, Function3<A, B, C, Z> f) {
+    public static <A, B, C, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, Function3<A, B, C, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -120,7 +120,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, Z> ConfigDef<Z> apply4(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, Function4<A, B, C, D, Z> f) {
+    public static <A, B, C, D, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, Function4<A, B, C, D, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -138,7 +138,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, Z> ConfigDef<Z> apply5(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, Function5<A, B, C, D, E, Z> f) {
+    public static <A, B, C, D, E, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, Function5<A, B, C, D, E, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -158,7 +158,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, Z> ConfigDef<Z> apply6(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, Function6<A, B, C, D, E, F, Z> f) {
+    public static <A, B, C, D, E, F, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, Function6<A, B, C, D, E, F, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -180,7 +180,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, Z> ConfigDef<Z> apply7(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, Function7<A, B, C, D, E, F, G, Z> f) {
+    public static <A, B, C, D, E, F, G, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, Function7<A, B, C, D, E, F, G, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -204,7 +204,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, Z> ConfigDef<Z> apply8(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, Function8<A, B, C, D, E, F, G, H, Z> f) {
+    public static <A, B, C, D, E, F, G, H, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, Function8<A, B, C, D, E, F, G, H, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -230,7 +230,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, Z> ConfigDef<Z> apply9(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, Function9<A, B, C, D, E, F, G, H, I, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, Function9<A, B, C, D, E, F, G, H, I, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -258,7 +258,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, Z> ConfigDef<Z> apply10(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, Function10<A, B, C, D, E, F, G, H, I, J, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, Function10<A, B, C, D, E, F, G, H, I, J, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -288,7 +288,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, Z> ConfigDef<Z> apply11(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, Function11<A, B, C, D, E, F, G, H, I, J, K, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, Function11<A, B, C, D, E, F, G, H, I, J, K, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -320,7 +320,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, Z> ConfigDef<Z> apply12(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, Function12<A, B, C, D, E, F, G, H, I, J, K, L, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, Function12<A, B, C, D, E, F, G, H, I, J, K, L, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -354,7 +354,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, Z> ConfigDef<Z> apply13(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, Function13<A, B, C, D, E, F, G, H, I, J, K, L, M, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, Function13<A, B, C, D, E, F, G, H, I, J, K, L, M, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -390,7 +390,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, Z> ConfigDef<Z> apply14(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, Function14<A, B, C, D, E, F, G, H, I, J, K, L, M, N, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, Function14<A, B, C, D, E, F, G, H, I, J, K, L, M, N, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -428,7 +428,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, Z> ConfigDef<Z> apply15(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, Function15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, Function15<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -468,7 +468,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Z> ConfigDef<Z> apply16(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, Function16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, Function16<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -510,7 +510,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, Z> ConfigDef<Z> apply17(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, Function17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, Function17<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -554,7 +554,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, Z> ConfigDef<Z> apply18(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, Function18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, Function18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -600,7 +600,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, Z> ConfigDef<Z> apply19(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, Function19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, Function19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -648,7 +648,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, Z> ConfigDef<Z> apply20(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, Function20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, Function20<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -698,7 +698,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, Z> ConfigDef<Z> apply21(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, Function21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, Function21<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -750,7 +750,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, Z> ConfigDef<Z> apply22(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, Function22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, Function22<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -804,7 +804,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, Z> ConfigDef<Z> apply23(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, Function23<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, Function23<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -860,7 +860,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Z> ConfigDef<Z> apply24(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, Function24<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, Function24<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -918,7 +918,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z> ConfigDef<Z> apply25(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, Function25<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, Function25<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -978,7 +978,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, Z> ConfigDef<Z> apply26(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, Function26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, Function26<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -1040,7 +1040,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, Z> ConfigDef<Z> apply27(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, ConfigDef<B2> cb2, Function27<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, ConfigDef<B2> cb2, Function27<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -1104,7 +1104,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, Z> ConfigDef<Z> apply28(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, ConfigDef<B2> cb2, ConfigDef<C2> cc2, Function28<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, ConfigDef<B2> cb2, ConfigDef<C2> cc2, Function28<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -1170,7 +1170,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, Z> ConfigDef<Z> apply29(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, ConfigDef<B2> cb2, ConfigDef<C2> cc2, ConfigDef<D2> cd2, Function29<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, ConfigDef<B2> cb2, ConfigDef<C2> cc2, ConfigDef<D2> cd2, Function29<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -1238,7 +1238,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, E2, Z> ConfigDef<Z> apply30(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, ConfigDef<B2> cb2, ConfigDef<C2> cc2, ConfigDef<D2> cd2, ConfigDef<E2> ce2, Function30<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, E2, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, E2, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, ConfigDef<B2> cb2, ConfigDef<C2> cc2, ConfigDef<D2> cd2, ConfigDef<E2> ce2, Function30<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, E2, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -1308,7 +1308,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, E2, F2, Z> ConfigDef<Z> apply31(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, ConfigDef<B2> cb2, ConfigDef<C2> cc2, ConfigDef<D2> cd2, ConfigDef<E2> ce2, ConfigDef<F2> cf2, Function31<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, E2, F2, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, E2, F2, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, ConfigDef<B2> cb2, ConfigDef<C2> cc2, ConfigDef<D2> cd2, ConfigDef<E2> ce2, ConfigDef<F2> cf2, Function31<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, E2, F2, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);
@@ -1380,7 +1380,7 @@ public interface ConfigDef<A> {
         };
     }
 
-    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, E2, F2, G2, Z> ConfigDef<Z> apply32(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, ConfigDef<B2> cb2, ConfigDef<C2> cc2, ConfigDef<D2> cd2, ConfigDef<E2> ce2, ConfigDef<F2> cf2, ConfigDef<G2> cg2, Function32<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, E2, F2, G2, Z> f) {
+    public static <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, E2, F2, G2, Z> ConfigDef<Z> apply(ConfigDef<A> ca, ConfigDef<B> cb, ConfigDef<C> cc, ConfigDef<D> cd, ConfigDef<E> ce, ConfigDef<F> cf, ConfigDef<G> cg, ConfigDef<H> ch, ConfigDef<I> ci, ConfigDef<J> cj, ConfigDef<K> ck, ConfigDef<L> cl, ConfigDef<M> cm, ConfigDef<N> cn, ConfigDef<O> co, ConfigDef<P> cp, ConfigDef<Q> cq, ConfigDef<R> cr, ConfigDef<S> cs, ConfigDef<T> ct, ConfigDef<U> cu, ConfigDef<V> cv, ConfigDef<W> cw, ConfigDef<X> cx, ConfigDef<Y> cy, ConfigDef<A2> ca2, ConfigDef<B2> cb2, ConfigDef<C2> cc2, ConfigDef<D2> cd2, ConfigDef<E2> ce2, ConfigDef<F2> cf2, ConfigDef<G2> cg2, Function32<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, A2, B2, C2, D2, E2, F2, G2, Z> f) {
         return sources -> {
             Set<ErrorMsg> errors = new HashSet<>();
             var ea = ca.run(sources);

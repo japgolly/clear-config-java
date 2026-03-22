@@ -15,12 +15,12 @@ public class ConfigDefTest {
     public record HttpServer(int port, InetAddress host) {
     }
 
-    ConfigDef<HttpServer> configDefWithDefaults = ConfigDef.apply2(
+    ConfigDef<HttpServer> configDefWithDefaults = ConfigDef.apply(
             ConfigDef.integer.getOrUse("port", 8080),
             ConfigDef.inetAddress.getOrParse("host", "0.0.0.0"),
             HttpServer::new);
 
-    ConfigDef<HttpServer> configDefWithoutDefaults = ConfigDef.apply2(
+    ConfigDef<HttpServer> configDefWithoutDefaults = ConfigDef.apply(
             ConfigDef.integer.need("port"),
             ConfigDef.inetAddress.need("host"),
             HttpServer::new);
