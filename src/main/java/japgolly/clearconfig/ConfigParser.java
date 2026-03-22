@@ -18,8 +18,6 @@ public interface ConfigParser<A> {
         return s -> parse(s).flatMap(f);
     }
 
-    // ================================================================================================================
-
     public default ConfigDef<Optional<A>> get(String key) {
         return sources -> sources.get(key, this).mapFailure(e -> Set.of(e));
     }
@@ -68,4 +66,49 @@ public interface ConfigParser<A> {
     public default <B> ConfigDef<Consumer<B>> needAndSet(String key, BiConsumer<B, A> f) {
         return sources -> need(key).run(sources).map(a -> b -> f.accept(b, a));
     }
+
+    // ================================================================================================================
+
+    public static final ConfigParser<String> String =
+        s -> new Either.Success<>(s.replaceFirst("#.*", "").trim());
+
+    public static final ConfigParser<String> StringRaw =
+        s -> new Either.Success<>(s);
+
+    public static final ConfigParser<Integer> Integer =
+        String.map(java.lang.Integer::parseInt);
+
+    public static final ConfigParser<Long> Long =
+        String.map(java.lang.Long::parseLong);
+
+    public static final ConfigParser<Double> Double =
+        String.map(java.lang.Double::parseDouble);
+
+    public static final ConfigParser<Float> Float =
+        String.map(java.lang.Float::parseFloat);
+
+    public static final ConfigParser<Short> Short =
+        String.map(java.lang.Short::parseShort);
+
+    public static final ConfigParser<Boolean> Boolean =
+        String.flatMap(s -> {
+            if (Internals.REGEX_TRUE.matcher(s).matches())
+                return new Either.Success<>(true);
+            else if (Internals.REGEX_FALSE.matcher(s).matches())
+                return new Either.Success<>(false);
+            else
+                return new Either.Failure<>(new ErrorMsg("Invalid boolean"));
+        });
+
+    public static final ConfigParser<java.net.InetAddress> InetAddress =
+        String.flatMap(s -> {
+            try {
+                return new Either.Success<>(java.net.InetAddress.getByName(s));
+            } catch (Exception e) {
+                return new Either.Failure<>(new ErrorMsg("Invalid InetAddress"));
+            }
+        });
+
+    public static final ConfigParser<java.util.UUID> UUID =
+        String.map(java.util.UUID::fromString);
 }

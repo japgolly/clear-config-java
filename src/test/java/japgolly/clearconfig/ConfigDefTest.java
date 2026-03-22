@@ -16,13 +16,13 @@ public class ConfigDefTest {
     }
 
     ConfigDef<HttpServer> configDefWithDefaults = ConfigDef.apply(
-            ConfigDef.Integer.getOrUse("port", 8080),
-            ConfigDef.InetAddress.getOrParse("host", "0.0.0.0"),
+            ConfigParser.Integer.getOrUse("port", 8080),
+            ConfigParser.InetAddress.getOrParse("host", "0.0.0.0"),
             HttpServer::new);
 
     ConfigDef<HttpServer> configDefWithoutDefaults = ConfigDef.apply(
-            ConfigDef.Integer.need("port"),
-            ConfigDef.InetAddress.need("host"),
+            ConfigParser.Integer.need("port"),
+            ConfigParser.InetAddress.need("host"),
             HttpServer::new);
 
     private <A> void assertSuccess(A expected, Either<Set<ErrorMsg>, A> actual) {
@@ -65,7 +65,7 @@ public class ConfigDefTest {
     public void mappedKeys() {
         var source = ConfigSource.ofMap("test", Map.of("blah.port", "1234"));
         var sources = ConfigSources.of(source);
-        var def = ConfigDef.Integer.getOrUse("port", 8080).withKeyPrefix("blah.");
+        var def = ConfigParser.Integer.getOrUse("port", 8080).withKeyPrefix("blah.");
         var result = def.run(sources);
         assertSuccess(1234, result);
     }
@@ -74,7 +74,7 @@ public class ConfigDefTest {
     public void parserError() {
         var source = ConfigSource.ofMap("test", Map.of("port", "x"));
         var sources = ConfigSources.of(source);
-        var def = ConfigDef.Integer.need("port");
+        var def = ConfigParser.Integer.need("port");
         var result = def.run(sources);
         assertFailure(Set.of(
             ErrorMsg.uncaughtParsingError("port", "x", new NumberFormatException())
@@ -118,11 +118,11 @@ public class ConfigDefTest {
     @Test
     public void setters() throws UnsatisfiedConfigException {
         var configDef = ConfigDef.setters(
-            ConfigDef.String.needAndSet("v", Settable::setV),
-            ConfigDef.String.getAndSet("w", Settable::setW),
-            ConfigDef.String.getAndSet("x", Settable::setX),
-            ConfigDef.String.getOrUseAndSet("y", "default #", Settable::setY),
-            ConfigDef.String.getOrParseAndSet("z", "def #", Settable::setZ)
+            ConfigParser.String.needAndSet("v", Settable::setV),
+            ConfigParser.String.getAndSet("w", Settable::setW),
+            ConfigParser.String.getAndSet("x", Settable::setX),
+            ConfigParser.String.getOrUseAndSet("y", "default #", Settable::setY),
+            ConfigParser.String.getOrParseAndSet("z", "def #", Settable::setZ)
         );
         var source = ConfigSource.ofMap("test", Map.of("v", "vee", "x", "eks"));
         var sources = ConfigSources.of(source);
