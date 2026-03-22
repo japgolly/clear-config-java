@@ -23,7 +23,12 @@ public final class ConfigSources {
         for (ConfigSource s : sources()) {
             final var value = s.get(key);
             if (value != null) {
-                return parser.parse(value).map(a -> Optional.of(a));
+                try {
+                    return parser.parse(value).map(a -> Optional.of(a));
+                } catch (Throwable e) {
+                    var err = ErrorMsg.uncaughtParsingError(key, value, e);
+                    return new Either.Failure<>(err);
+                }
             }
         }
         return new Either.Success<>(Optional.empty());

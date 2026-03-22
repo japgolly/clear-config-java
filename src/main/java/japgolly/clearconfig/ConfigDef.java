@@ -46,13 +46,7 @@ public interface ConfigDef<A> {
         s -> new Either.Success<>(s);
 
     public static final ConfigValueParser<Integer> integer =
-        string.flatMap(s -> {
-            try {
-                return new Either.Success<>(Integer.parseInt(s));
-            } catch (NumberFormatException e) {
-                return new Either.Failure<>(new ErrorMsg("Invalid integer: " + s));
-            }
-        });
+        string.map(Integer::parseInt);
 
     public static final ConfigValueParser<InetAddress> inetAddress =
         string.flatMap(s -> {

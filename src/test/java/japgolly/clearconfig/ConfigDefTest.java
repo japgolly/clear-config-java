@@ -71,6 +71,17 @@ public class ConfigDefTest {
     }
 
     @Test
+    public void parserError() {
+        var source = ConfigSource.ofMap("test", Map.of("port", "x"));
+        var sources = ConfigSources.of(source);
+        var def = ConfigDef.integer.need("port");
+        var result = def.run(sources);
+        assertFailure(Set.of(
+            ErrorMsg.uncaughtParsingError("port", "x", new NumberFormatException())
+        ), result);
+    }
+
+    @Test
     public void runOrThrow() {
         var sources = ConfigSources.of();
         try {
