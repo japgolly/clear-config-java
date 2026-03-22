@@ -18,12 +18,12 @@ public class ConfigDefTest {
     ConfigDef<HttpServer> configDefWithDefaults = ConfigDef.apply2(
             ConfigDef.integer.getOrUse("port", 8080),
             ConfigDef.inetAddress.getOrParse("host", "0.0.0.0"),
-            (port, host) -> new HttpServer(port, host));
+            HttpServer::new);
 
     ConfigDef<HttpServer> configDefWithoutDefaults = ConfigDef.apply2(
             ConfigDef.integer.need("port"),
             ConfigDef.inetAddress.need("host"),
-            (port, host) -> new HttpServer(port, host));
+            HttpServer::new);
 
     private <A> void assertSuccess(A expected, Either<Set<ErrorMsg>, A> actual) {
         assertEquals(new Either.Success<>(expected), actual);
@@ -62,7 +62,7 @@ public class ConfigDefTest {
     }
 
     @Test
-    public void testMapKeys() {
+    public void mappedKeys() {
         var source = ConfigSource.ofMap("test", Map.of("blah.port", "1234"));
         var sources = ConfigSources.of(source);
         var def = ConfigDef.integer.getOrUse("port", 8080).withKeyPrefix("blah.");
@@ -71,7 +71,7 @@ public class ConfigDefTest {
     }
 
     @Test
-    public void testRunOrThrow() {
+    public void runOrThrow() {
         var sources = ConfigSources.of();
         try {
             configDefWithoutDefaults.runOrThrow(sources);
