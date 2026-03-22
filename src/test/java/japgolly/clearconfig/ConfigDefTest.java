@@ -112,7 +112,7 @@ public class ConfigDefTest {
         public void setW(String w) { this.w = w; }
         public void setX(String x) { this.x = x; }
         public void setY(String y) { this.y = y; }
-        public void setZ(String z) { this.z = z; }
+        public Settable setZ(String z) { this.z = z; return this; }
     }
 
     @Test
