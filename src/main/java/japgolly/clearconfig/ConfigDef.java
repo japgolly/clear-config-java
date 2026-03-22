@@ -60,7 +60,7 @@ public interface ConfigDef<A> {
     // =================================================================================================================
 
     @SafeVarargs
-    public static <A> ConfigDef<Consumer<A>> consume(ConfigDef<Consumer<A>>... fns) {
+    public static <A> ConfigDef<Consumer<A>> setters(ConfigDef<Consumer<A>>... fns) {
         return sources -> {
             final Set<ErrorMsg> errors = new HashSet<>();
             final List<Consumer<A>> consumers = new ArrayList<>(fns.length);

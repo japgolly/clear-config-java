@@ -46,39 +46,26 @@ public interface ConfigValueParser<A> {
         });
     }
 
-    public default <B> ConsumerDsl<A, B> consume() {
-        return new ConsumerDsl<>(this);
+    public default <B> ConfigDef<Consumer<B>> getOptionalAndSet(String key, BiConsumer<B, Optional<A>> f) {
+        return sources -> get(key).run(sources).map(o -> b -> f.accept(b, o));
     }
 
-    public static class ConsumerDsl<A, B> {
-        private final ConfigValueParser<A> self;
+    public default <B> ConfigDef<Consumer<B>> getAndSet(String key, BiConsumer<B, A> f) {
+        return getOptionalAndSet(key, (b, o) -> {
+            if (o.isPresent())
+                f.accept(b, o.get());
+        });
+    }
 
-        public ConsumerDsl(ConfigValueParser<A> self) {
-            this.self = self;
-        }
+    public default <B> ConfigDef<Consumer<B>> getOrUseAndSet(String key, A defaultValue, BiConsumer<B, A> f) {
+        return getOptionalAndSet(key, (b, o) -> f.accept(b, o.orElseGet(() -> defaultValue)));
+    }
 
-        public ConfigDef<Consumer<B>> getOptional(String key, BiConsumer<B, Optional<A>> f) {
-            return sources -> self.get(key).run(sources).map(o -> b -> f.accept(b, o));
-        }
+    public default <B> ConfigDef<Consumer<B>> getOrParseAndSet(String key, String defaultValue, BiConsumer<B, A> f) {
+        return sources -> getOrParse(key, defaultValue).run(sources).map(a -> b -> f.accept(b, a));
+    }
 
-        public ConfigDef<Consumer<B>> get(String key, BiConsumer<B, A> f) {
-            return getOptional(key, (b, o) -> {
-                if (o.isPresent())
-                    f.accept(b, o.get());
-            });
-        }
-
-        public ConfigDef<Consumer<B>> getOrUse(String key, A defaultValue, BiConsumer<B, A> f) {
-            return getOptional(key, (b, o) -> f.accept(b, o.orElseGet(() -> defaultValue)));
-        }
-
-        public ConfigDef<Consumer<B>> getOrParse(String key, String defaultValue, BiConsumer<B, A> f) {
-            return sources -> self.getOrParse(key, defaultValue).run(sources).map(a -> b -> f.accept(b, a));
-        }
-
-        public ConfigDef<Consumer<B>> need(String key, BiConsumer<B, A> f) {
-            return sources -> self.need(key).run(sources).map(a -> b -> f.accept(b, a));
-        }
-
+    public default <B> ConfigDef<Consumer<B>> needAndSet(String key, BiConsumer<B, A> f) {
+        return sources -> need(key).run(sources).map(a -> b -> f.accept(b, a));
     }
 }

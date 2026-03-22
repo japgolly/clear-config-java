@@ -107,22 +107,29 @@ public class ConfigDefTest {
     }
 
     class Settable {
-        public String w, x, y, z;
+        String v, w, x, y, z;
+        public void setV(String v) { this.v = v; }
+        public void setW(String w) { this.w = w; }
+        public void setX(String x) { this.x = x; }
+        public void setY(String y) { this.y = y; }
+        public void setZ(String z) { this.z = z; }
     }
 
     @Test
-    public void consumers() throws UnsatisfiedConfigException {
-        var configDef = ConfigDef.consume(
-            ConfigDef.string.<Settable>consume().get("w", (s, a) -> s.w = a),
-            ConfigDef.string.<Settable>consume().get("x", (s, a) -> s.x = a),
-            ConfigDef.string.<Settable>consume().getOrUse("y", "default #", (s, a) -> s.y = a),
-            ConfigDef.string.<Settable>consume().getOrParse("z", "def #", (s, a) -> s.z = a)
+    public void setters() throws UnsatisfiedConfigException {
+        var configDef = ConfigDef.setters(
+            ConfigDef.string.needAndSet("v", Settable::setV),
+            ConfigDef.string.getAndSet("w", Settable::setW),
+            ConfigDef.string.getAndSet("x", Settable::setX),
+            ConfigDef.string.getOrUseAndSet("y", "default #", Settable::setY),
+            ConfigDef.string.getOrParseAndSet("z", "def #", Settable::setZ)
         );
-        var source = ConfigSource.ofMap("test", Map.of("x", "eks"));
+        var source = ConfigSource.ofMap("test", Map.of("v", "vee", "x", "eks"));
         var sources = ConfigSources.of(source);
         var consumer = configDef.runOrThrow(sources);
         var s = new Settable();
         consumer.accept(s);
+        assertEquals("vee", s.v);
         assertEquals(null, s.w);
         assertEquals("eks", s.x);
         assertEquals("default #", s.y);
