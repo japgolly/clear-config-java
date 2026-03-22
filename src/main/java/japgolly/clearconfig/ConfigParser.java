@@ -7,14 +7,14 @@ import java.util.function.Function;
 
 import japgolly.clearconfig.util.*;
 
-public interface ConfigValueParser<A> {
+public interface ConfigParser<A> {
     public Either<ErrorMsg, A> parse(String s);
 
-    public default <B> ConfigValueParser<B> map(Function<? super A, ? extends B> f) {
+    public default <B> ConfigParser<B> map(Function<? super A, ? extends B> f) {
         return flatMap(a -> new Either.Success<>(f.apply(a)));
     }
 
-    public default <B> ConfigValueParser<B> flatMap(Function<? super A, Either<ErrorMsg, B>> f) {
+    public default <B> ConfigParser<B> flatMap(Function<? super A, Either<ErrorMsg, B>> f) {
         return s -> parse(s).flatMap(f);
     }
 

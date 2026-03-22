@@ -38,28 +38,28 @@ public interface ConfigDef<A> {
 
     // =================================================================================================================
 
-    public static final ConfigValueParser<String> String =
+    public static final ConfigParser<String> String =
         s -> new Either.Success<>(s.replaceFirst("#.*", "").trim());
 
-    public static final ConfigValueParser<String> StringRaw =
+    public static final ConfigParser<String> StringRaw =
         s -> new Either.Success<>(s);
 
-    public static final ConfigValueParser<Integer> Integer =
+    public static final ConfigParser<Integer> Integer =
         String.map(java.lang.Integer::parseInt);
 
-    public static final ConfigValueParser<Long> Long =
+    public static final ConfigParser<Long> Long =
         String.map(java.lang.Long::parseLong);
 
-    public static final ConfigValueParser<Double> Double =
+    public static final ConfigParser<Double> Double =
         String.map(java.lang.Double::parseDouble);
 
-    public static final ConfigValueParser<Float> Float =
+    public static final ConfigParser<Float> Float =
         String.map(java.lang.Float::parseFloat);
 
-    public static final ConfigValueParser<Short> Short =
+    public static final ConfigParser<Short> Short =
         String.map(java.lang.Short::parseShort);
 
-    public static final ConfigValueParser<Boolean> Boolean =
+    public static final ConfigParser<Boolean> Boolean =
         String.flatMap(s -> {
             if (Internals.REGEX_TRUE.matcher(s).matches())
                 return new Either.Success<>(true);
@@ -69,7 +69,7 @@ public interface ConfigDef<A> {
                 return new Either.Failure<>(new ErrorMsg("Invalid boolean"));
         });
 
-    public static final ConfigValueParser<java.net.InetAddress> InetAddress =
+    public static final ConfigParser<java.net.InetAddress> InetAddress =
         String.flatMap(s -> {
             try {
                 return new Either.Success<>(java.net.InetAddress.getByName(s));
@@ -78,7 +78,7 @@ public interface ConfigDef<A> {
             }
         });
 
-    public static final ConfigValueParser<java.util.UUID> UUID =
+    public static final ConfigParser<java.util.UUID> UUID =
         String.map(java.util.UUID::fromString);
 
     // =================================================================================================================

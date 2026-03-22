@@ -19,7 +19,7 @@ public final class ConfigSources {
         this.sources = Collections.unmodifiableList(sources);
     }
 
-    public <A> Either<ErrorMsg, Optional<A>> get(String key, ConfigValueParser<A> parser) {
+    public <A> Either<ErrorMsg, Optional<A>> get(String key, ConfigParser<A> parser) {
         for (ConfigSource s : sources()) {
             final var value = s.get(key);
             if (value != null) {
