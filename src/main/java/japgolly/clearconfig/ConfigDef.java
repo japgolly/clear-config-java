@@ -39,19 +39,31 @@ public interface ConfigDef<A> {
 
     // =================================================================================================================
 
-    public static final ConfigValueParser<String> string =
+    public static final ConfigValueParser<String> String =
         s -> new Either.Success<>(s.replaceFirst("#.*", "").trim());
 
-    public static final ConfigValueParser<String> stringRaw =
+    public static final ConfigValueParser<String> StringRaw =
         s -> new Either.Success<>(s);
 
-    public static final ConfigValueParser<Integer> integer =
-        string.map(Integer::parseInt);
+    public static final ConfigValueParser<Integer> Integer =
+        String.map(java.lang.Integer::parseInt);
 
-    public static final ConfigValueParser<InetAddress> inetAddress =
-        string.flatMap(s -> {
+    public static final ConfigValueParser<Long> Long =
+        String.map(java.lang.Long::parseLong);
+
+    public static final ConfigValueParser<Double> Double =
+        String.map(java.lang.Double::parseDouble);
+
+    public static final ConfigValueParser<Float> Float =
+        String.map(java.lang.Float::parseFloat);
+
+    public static final ConfigValueParser<Short> Short =
+        String.map(java.lang.Short::parseShort);
+
+    public static final ConfigValueParser<InetAddress> InetAddress =
+        String.flatMap(s -> {
             try {
-                return new Either.Success<>(InetAddress.getByName(s));
+                return new Either.Success<>(java.net.InetAddress.getByName(s));
             } catch (Exception e) {
                 return new Either.Failure<>(new ErrorMsg("Invalid InetAddress: " + s));
             }

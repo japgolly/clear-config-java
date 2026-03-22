@@ -38,10 +38,10 @@ public class ConfigSource {
 
     // =================================================================================================================
 
-    public static final ConfigSource environment =
+    public static final ConfigSource Environment =
         ofMap("Environment", System.getenv());
 
-    public static final ConfigSource systemProps =
+    public static final ConfigSource SystemProps =
         ofProperties("System Properties", System.getProperties());
 
     public static ConfigSource ofMap(String name, Map<String, String> map) {
