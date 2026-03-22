@@ -65,7 +65,7 @@ public interface ConfigDef<A> {
             try {
                 return new Either.Success<>(java.net.InetAddress.getByName(s));
             } catch (Exception e) {
-                return new Either.Failure<>(new ErrorMsg("Invalid InetAddress: " + s));
+                return new Either.Failure<>(new ErrorMsg("Invalid InetAddress"));
             }
         });
 
