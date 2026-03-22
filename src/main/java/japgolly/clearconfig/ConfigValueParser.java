@@ -11,7 +11,7 @@ public interface ConfigValueParser<A> {
     public Either<ErrorMsg, A> parse(String s);
 
     public default <B> ConfigValueParser<B> map(Function<? super A, ? extends B> f) {
-        return s -> parse(s).map(f);
+        return flatMap(a -> new Either.Success<>(f.apply(a)));
     }
 
     public default <B> ConfigValueParser<B> flatMap(Function<? super A, Either<ErrorMsg, B>> f) {
