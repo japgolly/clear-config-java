@@ -8,7 +8,15 @@ import java.util.function.Function;
 import japgolly.clearconfig.util.*;
 
 public interface ConfigParser<A> {
-    public Either<ErrorMsg, A> parse(String s);
+    public default Either<ErrorMsg, A> parse(String s) {
+        try {
+            return parseOrThrow(s);
+        } catch (Throwable e) {
+            return new Either.Failure<>(ErrorMsg.parsingError(e));
+        }
+    }
+
+    public Either<ErrorMsg, A> parseOrThrow(String s);
 
     public default <B> ConfigParser<B> map(Function<? super A, ? extends B> f) {
         return flatMap(a -> new Either.Success<>(f.apply(a)));

@@ -33,6 +33,7 @@ public class ConfigParserTest {
     public void integer() {
         assertPass(123, ConfigParser.Integer.parse("123"));
         assertPass(-45, ConfigParser.Integer.parse("-45"));
+        assertFail("java.lang.NumberFormatException", ConfigParser.Integer.parse("what"));
     }
 
     @Test

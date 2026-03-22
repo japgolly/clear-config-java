@@ -20,15 +20,17 @@ public final class ConfigSources {
     }
 
     public <A> Either<ErrorMsg, Optional<A>> get(String key, ConfigParser<A> parser) {
-        for (ConfigSource s : sources()) {
-            final var value = s.get(key);
+        for (ConfigSource src : sources()) {
+            final var value = src.get(key);
             if (value != null) {
-                try {
-                    return parser.parse(value).map(a -> Optional.of(a));
-                } catch (Throwable e) {
-                    var err = ErrorMsg.uncaughtParsingError(key, value, e);
-                    return new Either.Failure<>(err);
-                }
+                return switch (parser.parse(value)) {
+                    case Either.Success<ErrorMsg, A> s ->
+                        s.map(a -> Optional.of(a));
+                    case Either.Failure<ErrorMsg, A> f -> {
+                        var newErrMsg = f.failure().addKeyValueContext(key, value);
+                        yield new Either.Failure<>(newErrMsg);
+                    }
+                };
             }
         }
         return new Either.Success<>(Optional.empty());
