@@ -69,12 +69,13 @@ public interface ConfigDef<A> {
     public static <A> ConfigDef<Consumer<A>> consume(ConfigDef<Consumer<A>>... fns) {
         return sources -> {
             final Set<ErrorMsg> errors = new HashSet<>();
-            final var consumers = new ArrayList<Consumer<A>>(fns.length);
+            final List<Consumer<A>> consumers = new ArrayList<>(fns.length);
             for (var fn : fns) {
-                var res = fn.run(sources);
-                res.foreachFailure(errors::addAll);
-                if (res instanceof Either.Success<Set<ErrorMsg>, Consumer<A>> s) {
-                    consumers.add(s.value());
+                switch (fn.run(sources)) {
+                    case Either.Success<Set<ErrorMsg>, Consumer<A>> s ->
+                        consumers.add(s.value());
+                    case Either.Failure<Set<ErrorMsg>, Consumer<A>> f ->
+                        errors.addAll(f.failure());
                 }
             }
             if (errors.isEmpty()) {

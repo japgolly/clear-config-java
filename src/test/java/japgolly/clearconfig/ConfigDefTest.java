@@ -104,7 +104,7 @@ public class ConfigDefTest {
         var configDef = ConfigDef.consume(
             ConfigDef.string.<Settable>consume().get("w", (s, a) -> s.w = a),
             ConfigDef.string.<Settable>consume().get("x", (s, a) -> s.x = a),
-            ConfigDef.string.<Settable>consume().getOrUse("y", "default", (s, a) -> s.y = a),
+            ConfigDef.string.<Settable>consume().getOrUse("y", "default #", (s, a) -> s.y = a),
             ConfigDef.string.<Settable>consume().getOrParse("z", "def #", (s, a) -> s.z = a)
         );
         var source = ConfigSource.ofMap("test", Map.of("x", "eks"));
@@ -114,7 +114,7 @@ public class ConfigDefTest {
         consumer.accept(s);
         assertEquals(null, s.w);
         assertEquals("eks", s.x);
-        assertEquals("default", s.y);
+        assertEquals("default #", s.y);
         assertEquals("def", s.z);
     }
 }
