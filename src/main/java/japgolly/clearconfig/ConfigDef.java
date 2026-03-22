@@ -1,6 +1,5 @@
 package japgolly.clearconfig;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -60,7 +59,17 @@ public interface ConfigDef<A> {
     public static final ConfigValueParser<Short> Short =
         String.map(java.lang.Short::parseShort);
 
-    public static final ConfigValueParser<InetAddress> InetAddress =
+    public static final ConfigValueParser<Boolean> Boolean =
+        String.flatMap(s -> {
+            if (Internals.REGEX_TRUE.matcher(s).matches())
+                return new Either.Success<>(true);
+            else if (Internals.REGEX_FALSE.matcher(s).matches())
+                return new Either.Success<>(false);
+            else
+                return new Either.Failure<>(new ErrorMsg("Invalid boolean"));
+        });
+
+    public static final ConfigValueParser<java.net.InetAddress> InetAddress =
         String.flatMap(s -> {
             try {
                 return new Either.Success<>(java.net.InetAddress.getByName(s));
@@ -68,6 +77,9 @@ public interface ConfigDef<A> {
                 return new Either.Failure<>(new ErrorMsg("Invalid InetAddress"));
             }
         });
+
+    public static final ConfigValueParser<java.util.UUID> UUID =
+        String.map(java.util.UUID::fromString);
 
     // =================================================================================================================
 
