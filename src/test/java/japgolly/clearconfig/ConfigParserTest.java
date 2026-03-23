@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import japgolly.clearconfig.util.*;
 import org.junit.Test;
 import java.net.InetAddress;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 public class ConfigParserTest {
@@ -77,5 +78,26 @@ public class ConfigParserTest {
     public void uuid() {
         UUID uuid = UUID.randomUUID();
         assertPass(uuid, ConfigParser.UUID.parse(uuid.toString()));
+    }
+
+    @Test
+    public void chronoUnit() {
+        assertPass(ChronoUnit.NANOS, ConfigParser.ChronoUnit.parse("ns"));
+        assertPass(ChronoUnit.NANOS, ConfigParser.ChronoUnit.parse("NANOSECONDS"));
+        assertPass(ChronoUnit.MICROS, ConfigParser.ChronoUnit.parse("us"));
+        assertPass(ChronoUnit.MICROS, ConfigParser.ChronoUnit.parse("μs"));
+        assertPass(ChronoUnit.MILLIS, ConfigParser.ChronoUnit.parse("ms"));
+        assertPass(ChronoUnit.MILLIS, ConfigParser.ChronoUnit.parse("millis"));
+        assertPass(ChronoUnit.SECONDS, ConfigParser.ChronoUnit.parse("s"));
+        assertPass(ChronoUnit.SECONDS, ConfigParser.ChronoUnit.parse("SEC"));
+        assertPass(ChronoUnit.MINUTES, ConfigParser.ChronoUnit.parse("min"));
+        assertPass(ChronoUnit.HOURS, ConfigParser.ChronoUnit.parse("HR"));
+        assertPass(ChronoUnit.HOURS, ConfigParser.ChronoUnit.parse("hour"));
+        assertPass(ChronoUnit.DAYS, ConfigParser.ChronoUnit.parse("d"));
+        assertPass(ChronoUnit.WEEKS, ConfigParser.ChronoUnit.parse("w"));
+        assertPass(ChronoUnit.MONTHS, ConfigParser.ChronoUnit.parse("month"));
+        assertPass(ChronoUnit.YEARS, ConfigParser.ChronoUnit.parse("y"));
+        assertPass(ChronoUnit.YEARS, ConfigParser.ChronoUnit.parse("YR"));
+        assertFail("Invalid ChronoUnit", ConfigParser.ChronoUnit.parse("what"));
     }
 }

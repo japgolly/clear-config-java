@@ -1,5 +1,6 @@
 package japgolly.clearconfig;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -133,4 +134,13 @@ public interface ConfigParser<A> {
 
     public static final ConfigParser<java.util.UUID> UUID =
         String.map(java.util.UUID::fromString);
+
+    public static final ConfigParser<ChronoUnit> ChronoUnit =
+        String.flatMap(s -> {
+            var u = Internals.textToChronoUnitMap().get(s.toLowerCase());
+            if (u == null)
+                return new Either.Failure<>(new ErrorMsg("Invalid ChronoUnit"));
+            else
+                return new Either.Success<>(u);
+        });
 }
