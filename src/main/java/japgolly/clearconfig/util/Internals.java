@@ -1,8 +1,10 @@
 package japgolly.clearconfig.util;
 
+import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public interface Internals {
@@ -97,5 +99,31 @@ public interface Internals {
             }
         }
         return m;
+    }
+
+    public static final String DURATION_EACH_S = "(?:(-?\\d+)\\s*([a-zA-Z]+))";
+    public static final Pattern DURATION_EACH = Pattern.compile(DURATION_EACH_S);
+    public static final Pattern DURATION_ALL = Pattern.compile(DURATION_EACH_S + "(?:(?:\\s|,)*" + DURATION_EACH_S + ")*");
+
+    public static Duration parseDuration(String s) {
+        if (!DURATION_ALL.matcher(s).matches())
+            return null;
+
+        final var chronoUnitMap = textToChronoUnitMap();
+        Matcher matcher = DURATION_EACH.matcher(s);
+        Duration totalDuration = Duration.ZERO;
+
+        while (matcher.find()) {
+            final String numStr = matcher.group(1);
+            final String unitStr = matcher.group(2);
+            final long n = Long.parseLong(numStr);
+            final ChronoUnit u = chronoUnitMap.get(unitStr);
+            if (u == null)
+                return null;
+            final var d = u.getDuration().multipliedBy(n);
+            totalDuration = totalDuration.plus(d);
+        }
+
+        return totalDuration;
     }
 }

@@ -1,5 +1,6 @@
 package japgolly.clearconfig;
 
+import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Set;
@@ -159,4 +160,9 @@ public interface ConfigParser<A> {
         String.mapToNonNull(
             s -> Internals.textToChronoUnitMap().get(s.toLowerCase()),
             new ErrorMsg("Invalid ChronoUnit"));
+
+    public static final ConfigParser<Duration> Duration =
+        String.mapToNonNull(
+            s -> Internals.parseDuration(s.toLowerCase()),
+            new ErrorMsg("Invalid Duration"));
 }

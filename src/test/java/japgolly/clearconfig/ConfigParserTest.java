@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import japgolly.clearconfig.util.*;
 import org.junit.Test;
 import java.net.InetAddress;
+import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
@@ -99,5 +100,15 @@ public class ConfigParserTest {
         assertPass(ChronoUnit.YEARS, ConfigParser.ChronoUnit.parse("y"));
         assertPass(ChronoUnit.YEARS, ConfigParser.ChronoUnit.parse("YR"));
         assertFail("Invalid ChronoUnit", ConfigParser.ChronoUnit.parse("what"));
+    }
+
+    @Test
+    public void duration() {
+        assertPass(Duration.ofMillis(123), ConfigParser.Duration.parse("123ms"));
+        assertPass(Duration.ofSeconds(-456), ConfigParser.Duration.parse("-456 Seconds"));
+        assertPass(Duration.ofSeconds(10).plus(Duration.ofMillis(123)), ConfigParser.Duration.parse("10s 123ms"));
+        assertPass(Duration.ofSeconds(10).plus(Duration.ofMillis(123)), ConfigParser.Duration.parse("10s, 123ms"));
+        assertFail("Invalid Duration", ConfigParser.Duration.parse("what"));
+        assertFail("Invalid Duration", ConfigParser.Duration.parse("123 what"));
     }
 }
