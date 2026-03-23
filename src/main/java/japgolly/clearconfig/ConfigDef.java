@@ -15,12 +15,7 @@ public interface ConfigDef<A> {
     public Either<Set<ErrorMsg>, A> run(ConfigSources sources);
 
     public default ConfigDef<A> mapKeys(Function<String, String> f) {
-        return sources -> {
-            List<ConfigSource> mappedSources = sources.sources().stream()
-                .map(s -> s.mapKeyQueries(f))
-                .toList();
-            return run(new ConfigSources(mappedSources));
-        };
+        return sources -> run(sources.map(s -> s.mapKeyQueries(f)));
     }
 
     public default ConfigDef<A> withKeyPrefix(String prefix) {

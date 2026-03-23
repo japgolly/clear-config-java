@@ -10,17 +10,17 @@ import japgolly.clearconfig.util.*;
 public final class ConfigSources {
     private final List<ConfigSource> sources;
 
-    public List<ConfigSource> sources() {
-        return sources;
-    }
-
     /** @param sources Highest priority first */
     public ConfigSources(List<ConfigSource> sources) {
         this.sources = Collections.unmodifiableList(sources);
     }
 
+    public ConfigSources map(Function<ConfigSource, ConfigSource> f) {
+        return new ConfigSources(sources.stream().map(s -> f.apply(s)).toList());
+    }
+
     public <A> Either<ErrorMsg, Optional<A>> get(String key, ConfigParser<A> parser) {
-        for (ConfigSource src : sources()) {
+        for (ConfigSource src : sources) {
             final var value = src.get(key);
             if (value != null) {
                 return switch (parser.parse(value)) {
