@@ -77,6 +77,20 @@ public interface ConfigParser<A> {
 
     // ================================================================================================================
 
+    public static <A> ConfigParser<A> constPass(A a) {
+        return constEither(new Either.Success<>(a));
+    }
+
+    public static <A> ConfigParser<A> constFail(ErrorMsg e) {
+        return constEither(new Either.Failure<>(e));
+    }
+
+    public static <A> ConfigParser<A> constEither(Either<ErrorMsg, A> e) {
+        return s -> e;
+    }
+
+    // ================================================================================================================
+
     public static final ConfigParser<String> String =
         s -> new Either.Success<>(s.replaceFirst("#.*", "").trim());
 
