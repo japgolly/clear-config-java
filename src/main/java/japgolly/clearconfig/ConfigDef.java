@@ -66,6 +66,20 @@ public interface ConfigDef<A> {
     // =================================================================================================================
     // Apply methods
 
+    public static <A, B> ConfigDef<B> apply(ConfigDef<A> ca, ConfigDef<Function<A, B>> cf) {
+        return sources -> {
+            Set<ErrorMsg> errors = new HashSet<>();
+            var ea = ca.run(sources);
+            var ef = cf.run(sources);
+            ea.foreachFailure(errs -> errors.addAll(errs));
+            ef.foreachFailure(errs -> errors.addAll(errs));
+            if (errors.isEmpty())
+                return new Either.Success<>(ef.getOrThrow().apply(ea.getOrThrow()));
+            else
+                return new Either.Failure<>(errors);
+        };
+    }
+
     public static <A, Z> ConfigDef<Z> apply(ConfigDef<A> ca, Function<A, Z> f) {
         return sources -> ca.run(sources).map(f);
     }
