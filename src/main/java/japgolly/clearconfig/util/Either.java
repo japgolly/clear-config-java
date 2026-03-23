@@ -34,7 +34,7 @@ public sealed interface Either<E, A> {
         }
 
         @Override
-        public Either<E, A> orElse(Supplier<Either<E, A>> next) {
+        public Either<E, A> orElse(Supplier<? extends Either<? extends E, ? extends A>> next) {
             return this;
         }
     }
@@ -69,8 +69,9 @@ public sealed interface Either<E, A> {
         }
 
         @Override
-        public Either<E, A> orElse(Supplier<Either<E, A>> next) {
-            return next.get();
+        @SuppressWarnings("unchecked")
+        public Either<E, A> orElse(Supplier<? extends Either<? extends E, ? extends A>> next) {
+            return (Either<E, A>) next.get();
         }
     }
 
@@ -79,5 +80,5 @@ public sealed interface Either<E, A> {
     public <B> Either<E, B> flatMap(Function<? super A, ? extends Either<E, B>> f);
     public void foreachFailure(Consumer<? super E> f);
     public <F> Either<F, A> mapFailure(Function<? super E, ? extends F> f);
-    public Either<E, A> orElse(Supplier<Either<E, A>> next);
+    public Either<E, A> orElse(Supplier<? extends Either<? extends E, ? extends A>> next);
 }

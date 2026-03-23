@@ -169,4 +169,12 @@ public class ConfigParserTest {
         var s = "a.*b";
         assertEquals(s, ConfigParser.Pattern.parse(s).getOrThrow().pattern());
     }
+
+    @Test
+    public void orElseVariance() {
+        ConfigParser<Number> p1 = s -> new Either.Failure<>(new ErrorMsg("err"));
+        ConfigParser<Integer> p2 = ConfigParser.Integer;
+        ConfigParser<Number> p3 = p1.orElse(p2);
+        assertPass(123, p3.parse("123"));
+    }
 }

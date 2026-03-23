@@ -26,7 +26,7 @@ public interface ConfigParser<A> {
 
     public Either<ErrorMsg, A> parseOrThrow(String s);
 
-    public default ConfigParser<A> orElse(ConfigParser<A> next) {
+    public default ConfigParser<A> orElse(ConfigParser<? extends A> next) {
         return s -> parse(s).orElse(() -> next.parse(s));
     }
 
