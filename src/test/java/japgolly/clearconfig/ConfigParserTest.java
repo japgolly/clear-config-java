@@ -111,4 +111,62 @@ public class ConfigParserTest {
         assertFail("Invalid Duration", ConfigParser.Duration.parse("what"));
         assertFail("Invalid Duration", ConfigParser.Duration.parse("123 what"));
     }
+
+    @Test
+    public void period() {
+        assertPass(java.time.Period.of(1, 2, 3), ConfigParser.Period.parse("P1Y2M3D"));
+    }
+
+    @Test
+    public void offsetDateTime() {
+        var s = "2024-03-23T10:30:00+11:00";
+        assertPass(java.time.OffsetDateTime.parse(s), ConfigParser.OffsetDateTime.parse(s));
+    }
+
+    @Test
+    public void zonedDateTime() {
+        var s = "2024-03-23T10:30:00+11:00[Australia/Sydney]";
+        assertPass(java.time.ZonedDateTime.parse(s), ConfigParser.ZonedDateTime.parse(s));
+    }
+
+    @Test
+    public void localDateTime() {
+        var s = "2024-03-23T10:30:00";
+        assertPass(java.time.LocalDateTime.parse(s), ConfigParser.LocalDateTime.parse(s));
+    }
+
+    @Test
+    public void localDate() {
+        var s = "2024-03-23";
+        assertPass(java.time.LocalDate.parse(s), ConfigParser.LocalDate.parse(s));
+    }
+
+    @Test
+    public void localTime() {
+        var s = "10:30:00";
+        assertPass(java.time.LocalTime.parse(s), ConfigParser.LocalTime.parse(s));
+    }
+
+    @Test
+    public void uri() {
+        assertPass(java.net.URI.create("https://google.com"), ConfigParser.URI.parse("https://google.com"));
+        assertFail("Invalid URI", ConfigParser.URI.parse("http://[:::1]"));
+    }
+
+    @Test
+    public void url() throws Exception {
+        assertPass(new java.net.URI("https://google.com").toURL(), ConfigParser.URL.parse("https://google.com"));
+        assertFail("Invalid URL", ConfigParser.URL.parse("abc"));
+    }
+
+    @Test
+    public void file() {
+        assertPass(new java.io.File("/tmp/abc"), ConfigParser.File.parse("/tmp/abc"));
+    }
+
+    @Test
+    public void pattern() {
+        var s = "a.*b";
+        assertEquals(s, ConfigParser.Pattern.parse(s).getOrThrow().pattern());
+    }
 }
