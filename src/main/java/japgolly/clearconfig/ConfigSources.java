@@ -79,4 +79,9 @@ public final class ConfigSources {
     public static ConfigSources of(ConfigSource s1, ConfigSource s2, ConfigSource s3, ConfigSource s4, ConfigSource s5, ConfigSource s6, ConfigSource s7) {
         return new ConfigSources(List.of(s1, s2, s3, s4, s5, s6, s7));
     }
+
+    /** Highest priority first */
+    public static ConfigSources of(ConfigSource s1, ConfigSource s2, ConfigSource s3, ConfigSource s4, ConfigSource s5, ConfigSource s6, ConfigSource s7, ConfigSource s8) {
+        return new ConfigSources(List.of(s1, s2, s3, s4, s5, s6, s7, s8));
+    }
 }
