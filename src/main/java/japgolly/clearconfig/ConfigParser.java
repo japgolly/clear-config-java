@@ -26,6 +26,10 @@ public interface ConfigParser<A> {
 
     public Either<ErrorMsg, A> parseOrThrow(String s);
 
+    public default ConfigParser<A> orElse(ConfigParser<A> next) {
+        return s -> parse(s).orElse(() -> next.parse(s));
+    }
+
     public default <B> ConfigParser<B> map(Function<? super A, ? extends B> f) {
         return flatMap(a -> new Either.Success<>(f.apply(a)));
     }

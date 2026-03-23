@@ -2,6 +2,7 @@ package japgolly.clearconfig.util;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public sealed interface Either<E, A> {
 
@@ -30,6 +31,11 @@ public sealed interface Either<E, A> {
         @SuppressWarnings("unchecked")
         public <F> Either<F, A> mapFailure(Function<? super E, ? extends F> f) {
             return (Either<F, A>) this;
+        }
+
+        @Override
+        public Either<E, A> orElse(Supplier<Either<E, A>> next) {
+            return this;
         }
     }
 
@@ -61,6 +67,11 @@ public sealed interface Either<E, A> {
         public <F> Either<F, A> mapFailure(Function<? super E, ? extends F> f) {
             return new Either.Failure<>(f.apply(failure));
         }
+
+        @Override
+        public Either<E, A> orElse(Supplier<Either<E, A>> next) {
+            return next.get();
+        }
     }
 
     public A getOrThrow();
@@ -68,4 +79,5 @@ public sealed interface Either<E, A> {
     public <B> Either<E, B> flatMap(Function<? super A, ? extends Either<E, B>> f);
     public void foreachFailure(Consumer<? super E> f);
     public <F> Either<F, A> mapFailure(Function<? super E, ? extends F> f);
+    public Either<E, A> orElse(Supplier<Either<E, A>> next);
 }
