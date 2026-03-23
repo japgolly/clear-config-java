@@ -38,6 +38,18 @@ public interface ConfigDef<A> {
 
     // =================================================================================================================
 
+    public static ConfigDef<Void> unit() {
+        return sources -> new Either.Success<>(null);
+    }
+
+    public static ConfigDef<Void> external(String... keys) {
+        var result = unit();
+        for (String key : keys) {
+            result = apply(result, ConfigParser.String.get(key), (a, b) -> null);
+        }
+        return result;
+    }
+
     @SafeVarargs
     public static <A> ConfigDef<Consumer<A>> setters(ConfigDef<Consumer<A>>... fns) {
         return sources -> {
