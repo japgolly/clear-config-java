@@ -23,6 +23,26 @@ public interface ConfigParser<A> {
         return flatMap(a -> new Either.Success<>(f.apply(a)));
     }
 
+    public default <B> ConfigParser<B> mapToNonNull(Function<? super A, ? extends B> f, ErrorMsg errorMsg) {
+        return flatMap(a -> {
+            var b = f.apply(a);
+            if (b == null)
+                return new Either.Failure<>(errorMsg);
+            else
+                return new Either.Success<>(b);
+        });
+    }
+
+    public default <B> ConfigParser<B> mapToNonEmpty(Function<? super A, ? extends Optional<B>> f, ErrorMsg errorMsg) {
+        return flatMap(a -> {
+            var o = f.apply(a);
+            if (o.isEmpty())
+                return new Either.Failure<>(errorMsg);
+            else
+                return new Either.Success<>(o.get());
+        });
+    }
+
     public default <B> ConfigParser<B> flatMap(Function<? super A, Either<ErrorMsg, B>> f) {
         return s -> parse(s).flatMap(f);
     }
@@ -136,11 +156,7 @@ public interface ConfigParser<A> {
         String.map(java.util.UUID::fromString);
 
     public static final ConfigParser<ChronoUnit> ChronoUnit =
-        String.flatMap(s -> {
-            var u = Internals.textToChronoUnitMap().get(s.toLowerCase());
-            if (u == null)
-                return new Either.Failure<>(new ErrorMsg("Invalid ChronoUnit"));
-            else
-                return new Either.Success<>(u);
-        });
+        String.mapToNonNull(
+            s -> Internals.textToChronoUnitMap().get(s.toLowerCase()),
+            new ErrorMsg("Invalid ChronoUnit"));
 }
