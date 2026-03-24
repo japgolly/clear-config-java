@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import japgolly.clearconfig.util.*;
 
@@ -94,6 +95,11 @@ public final class ConfigSources {
 
     public ConfigSources mapKeyQueries(Function<String, String> f) {
         return new ConfigSources(sources, state, keyMapper.compose(f));
+    }
+
+    public ConfigSources mapValues(Function<String, String> f) {
+        final var newSources = sources.stream().map(s -> s.mapValues(f)).collect(Collectors.toList());
+        return new ConfigSources(newSources, state, keyMapper);
     }
 
     // =================================================================================================================

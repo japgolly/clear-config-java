@@ -36,6 +36,17 @@ public class ConfigSource {
         };
     }
 
+    public ConfigSource mapValues(Function<String, String> f) {
+        var self = this;
+        return new ConfigSource(name, all) {
+            @Override
+            public String get(String key) {
+                var value = self.get(key);
+                return value == null ? null : f.apply(value);
+            }
+        };
+    }
+
     // =================================================================================================================
 
     public static final ConfigSource Environment =

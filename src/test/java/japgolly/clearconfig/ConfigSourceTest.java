@@ -13,4 +13,12 @@ public class ConfigSourceTest {
         assertEquals("1234", mapped.get("blah.port"));
         assertEquals(null, mapped.get("other"));
     }
+
+    @Test
+    public void testMapValues() {
+        var source = ConfigSource.ofMap("test", Map.of("port", "1234"));
+        var mapped = source.mapValues(s -> "[" + s + "]");
+        assertEquals("[1234]", mapped.get("port"));
+        assertEquals(null, mapped.get("other"));
+    }
 }

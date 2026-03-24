@@ -85,4 +85,22 @@ public class ConfigReportTest {
                 """.trim();
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void testMapValues() throws Throwable {
+        var source = ConfigSource.ofMap("Test", Map.of("need", "456"));
+        var sources = ConfigSources.of(source.mapValues(s -> "[" + s + "]"));
+        var configDef = ConfigParser.String.need("need");
+        var result = configDef.withReport().runOrThrow(sources);
+        var actual = result.report().seenTable();
+        var expected = """
+                +------+-------+---------+
+                | Key  | Test  | Default |
+                +------+-------+---------+
+                | need | [456] |         |
+                +------+-------+---------+
+                """.trim();
+        assertEquals(expected, actual);
+        assertEquals("[456]", result.value());
+    }
 }
