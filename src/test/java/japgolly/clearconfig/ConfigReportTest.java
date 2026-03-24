@@ -103,4 +103,22 @@ public class ConfigReportTest {
         assertEquals(expected, actual);
         assertEquals("[456]", result.value());
     }
+
+    @Test
+    public void testMapKeyQueries() throws Throwable {
+        var source = ConfigSource.ofMap("Test", Map.of("NEED", "456"));
+        var sources = ConfigSources.of(source.mapKeyQueries(String::toUpperCase));
+        var configDef = ConfigParser.String.need("need");
+        var result = configDef.withReport().runOrThrow(sources);
+        var actual = result.report().seenTable();
+        var expected = """
+                +------+------+---------+
+                | Key  | Test | Default |
+                +------+------+---------+
+                | need | 456  |         |
+                +------+------+---------+
+                """.trim();
+        assertEquals(expected, actual);
+        assertEquals("456", result.value());
+    }
 }
