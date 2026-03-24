@@ -59,4 +59,30 @@ public class ConfigReportTest {
         assertEquals(expected, actual);
         assertEquals(new Example(Optional.empty(), 789, 0, 456), result.value());
     }
+
+    @Test
+    public void testSecrets() throws Throwable {
+        var source = ConfigSource.ofMap("Test", Map.of("explicit", "x", "Secret", "pe"));
+        var sources = ConfigSources.of(source);
+        var configDef = ConfigDef.apply(
+            ConfigParser.String.getOrUse("Secret", "p1"),
+            ConfigParser.String.getOrUse("db.password", "p2"),
+            ConfigParser.String.getOrUse("other", "o"),
+            ConfigParser.String.getOrUse("explicit", "pe").secret(),
+            (a, b, c, d) -> null
+        );
+        var result = configDef.withReport().runOrThrow(sources);
+        var actual = result.report().seenTable();
+        var expected = """
+                +-------------+-----------------------+-----------------------+
+                | Key         | Test                  | Default               |
+                +-------------+-----------------------+-----------------------+
+                | Secret      | Obfuscated (8461AB4C) | Obfuscated (D8E5DA80) |
+                | db.password |                       | Obfuscated (EFE34FBF) |
+                | explicit    | Obfuscated (5CE2935F) | Obfuscated (8461AB4C) |
+                | other       |                       | o                     |
+                +-------------+-----------------------+-----------------------+
+                """.trim();
+        assertEquals(expected, actual);
+    }
 }
