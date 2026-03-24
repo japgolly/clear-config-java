@@ -28,7 +28,7 @@ public interface ConfigDef<A> {
     }
 
     public default ConfigDef<A> mapKeys(Function<String, String> f) {
-        return sources -> run(sources.map(s -> s.mapKeyQueries(f)));
+        return sources -> run(sources.mapKeyQueries(f));
     }
 
     public default ConfigDef<A> withKeyPrefix(String prefix) {

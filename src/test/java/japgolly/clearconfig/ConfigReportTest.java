@@ -37,4 +37,23 @@ public class ConfigReportTest {
                 """.trim();
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void testWithKeyPrefix() throws Throwable {
+        var source = ConfigSource.ofMap("Test", Map.of("test.need", "456"));
+        var sources = ConfigSources.of(source);
+        var result = configDefWithDefaults.withKeyPrefix("test.").withReport().runOrThrow(sources);
+        var actual = result.report().seenTable();
+        var expected = """
+                +-----------------+------+---------+
+                | Key             | Test | Default |
+                +-----------------+------+---------+
+                | test.get        |      |         |
+                | test.getOrParse |      | 789     |
+                | test.getOrUse   |      | 123     |
+                | test.need       | 456  |         |
+                +-----------------+------+---------+
+                """.trim();
+        assertEquals(expected, actual);
+    }
 }

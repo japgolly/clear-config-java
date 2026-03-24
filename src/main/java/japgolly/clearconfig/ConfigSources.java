@@ -13,48 +13,64 @@ import japgolly.clearconfig.util.*;
 
 public final class ConfigSources {
     final List<ConfigSource> sources;
-    final Map<String, KeyCtx> seen = new HashMap<>();
-    private boolean inSecretBlock = false;
+    private final State state;
+    private final Function<String, String> keyMapper;
+
+    private static final class State {
+        final Map<String, KeyCtx> seen = new HashMap<>();
+        boolean inSecretBlock = false;
+    }
 
     static final class KeyCtx {
         boolean secret = false;
         Optional<Object> defaultValue = Optional.empty();
     };
 
+    Map<String, KeyCtx> seen() {
+        return state.seen;
+    }
+
     /** @param sources Highest priority first */
     public ConfigSources(List<ConfigSource> sources) {
+        this(sources, new State(), Function.identity());
+    }
+
+    private ConfigSources(List<ConfigSource> sources, State state, Function<String, String> keyMapper) {
         this.sources = Collections.unmodifiableList(sources);
+        this.state = state;
+        this.keyMapper = keyMapper;
     }
 
     public ConfigSources map(Function<ConfigSource, ConfigSource> f) {
-        return new ConfigSources(sources.stream().map(s -> f.apply(s)).toList());
+        return new ConfigSources(sources.stream().map(s -> f.apply(s)).toList(), state, keyMapper);
     }
 
     public <A> A secretly(Supplier<A> f) {
-        final var prev = inSecretBlock;
-        inSecretBlock = true;
+        final var prev = state.inSecretBlock;
+        state.inSecretBlock = true;
         try {
             return f.get();
         } finally {
-            inSecretBlock = prev;
+            state.inSecretBlock = prev;
         }
     }
 
     private static final Pattern IMPLICITLY_SECRET = Pattern.compile(".*(?:secret|password).*", Pattern.CASE_INSENSITIVE);
 
-    public <A> Either<ErrorMsg, Optional<A>> get(String key, ConfigParser<A> parser, Optional<Object> defaultValue) {
+    public <A> Either<ErrorMsg, Optional<A>> get(String origKey, ConfigParser<A> parser, Optional<Object> defaultValue) {
+        final var key = keyMapper.apply(origKey);
 
         // Register each key lookup
-        var ctx = this.seen.get(key);
+        var ctx = state.seen.get(key);
         if (ctx == null) {
             ctx = new KeyCtx();
-            this.seen.put(key, ctx);
+            state.seen.put(key, ctx);
         } else {
             // TODO: Warning or error
         }
 
         // Mark as secret if necessary
-        if (inSecretBlock || IMPLICITLY_SECRET.matcher(key).matches())
+        if (state.inSecretBlock || IMPLICITLY_SECRET.matcher(key).matches())
             ctx.secret = true;
 
         ctx.defaultValue = defaultValue;
@@ -77,7 +93,7 @@ public final class ConfigSources {
     }
 
     public ConfigSources mapKeyQueries(Function<String, String> f) {
-        return new ConfigSources(sources.stream().map(s -> s.mapKeyQueries(f)).toList());
+        return new ConfigSources(sources, state, keyMapper.andThen(f));
     }
 
     // =================================================================================================================
