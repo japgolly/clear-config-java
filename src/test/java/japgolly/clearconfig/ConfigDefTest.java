@@ -12,7 +12,7 @@ import japgolly.clearconfig.util.*;
 
 public class ConfigDefTest {
 
-    public record HttpServer(int port, InetAddress host) {
+    record HttpServer(int port, InetAddress host) {
     }
 
     ConfigDef<HttpServer> configDefWithDefaults = ConfigDef.apply(

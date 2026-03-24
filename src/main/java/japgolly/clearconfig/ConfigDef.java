@@ -14,6 +14,19 @@ public interface ConfigDef<A> {
 
     public Either<Set<ErrorMsg>, A> run(ConfigSources sources);
 
+    /** Marks this ConfigDef as looking up secret data that shouldn't be exposed in the config report. */
+    public default ConfigDef<A> secret() {
+        return sources -> sources.secretly(() -> run(sources));
+    }
+
+    public default ConfigDef<ConfigReportAndValue<A>> withReport() {
+        final var self = this;
+        return sources -> {
+            var ea = self.run(sources);
+            return ea.map(a -> new ConfigReportAndValue<>(new ConfigReport(sources), a));
+        };
+    }
+
     public default ConfigDef<A> mapKeys(Function<String, String> f) {
         return sources -> run(sources.map(s -> s.mapKeyQueries(f)));
     }

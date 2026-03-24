@@ -1,14 +1,25 @@
 package japgolly.clearconfig;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 import japgolly.clearconfig.util.*;
 
 public final class ConfigSources {
-    private final List<ConfigSource> sources;
+    final List<ConfigSource> sources;
+    final Map<String, KeyCtx> seen = new HashMap<>();
+    private boolean inSecretBlock = false;
+
+    static final class KeyCtx {
+        boolean secret = false;
+        Optional<Object> defaultValue = Optional.empty();
+    };
 
     /** @param sources Highest priority first */
     public ConfigSources(List<ConfigSource> sources) {
@@ -19,7 +30,36 @@ public final class ConfigSources {
         return new ConfigSources(sources.stream().map(s -> f.apply(s)).toList());
     }
 
+    public <A> A secretly(Supplier<A> f) {
+        final var prev = inSecretBlock;
+        inSecretBlock = true;
+        try {
+            return f.get();
+        } finally {
+            inSecretBlock = prev;
+        }
+    }
+
+    private static final Pattern IMPLICITLY_SECRET = Pattern.compile(".*(?:secret|password).*", Pattern.CASE_INSENSITIVE);
+
     public <A> Either<ErrorMsg, Optional<A>> get(String key, ConfigParser<A> parser, Optional<Object> defaultValue) {
+
+        // Register each key lookup
+        var ctx = this.seen.get(key);
+        if (ctx == null) {
+            ctx = new KeyCtx();
+            this.seen.put(key, ctx);
+        } else {
+            // TODO: Warning or error
+        }
+
+        // Mark as secret if necessary
+        if (inSecretBlock || IMPLICITLY_SECRET.matcher(key).matches())
+            ctx.secret = true;
+
+        ctx.defaultValue = defaultValue;
+
+        // Parse the first matching value
         for (ConfigSource src : sources) {
             final var value = src.get(key);
             if (value != null) {
