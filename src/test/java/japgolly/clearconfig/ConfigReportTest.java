@@ -36,11 +36,12 @@ public class ConfigReportTest {
                 +------------+------+---------+
                 """.trim();
         assertEquals(expected, actual);
+        assertEquals(new Example(Optional.empty(), 789, 123, 456), result.value());
     }
 
     @Test
     public void testWithKeyPrefix() throws Throwable {
-        var source = ConfigSource.ofMap("Test", Map.of("test.need", "456"));
+        var source = ConfigSource.ofMap("Test", Map.of("test.need", "456", "test.getOrUse", "0"));
         var sources = ConfigSources.of(source);
         var configDef = configDefWithDefaults.withKeyPrefix("test_").mapKeys(s -> s.replace('_', '.'));
         var result = configDef.withReport().runOrThrow(sources);
@@ -51,10 +52,11 @@ public class ConfigReportTest {
                 +-----------------+------+---------+
                 | test.get        |      |         |
                 | test.getOrParse |      | 789     |
-                | test.getOrUse   |      | 123     |
+                | test.getOrUse   | 0    | 123     |
                 | test.need       | 456  |         |
                 +-----------------+------+---------+
                 """.trim();
         assertEquals(expected, actual);
+        assertEquals(new Example(Optional.empty(), 789, 0, 456), result.value());
     }
 }
