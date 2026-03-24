@@ -93,7 +93,7 @@ public final class ConfigSources {
     }
 
     public ConfigSources mapKeyQueries(Function<String, String> f) {
-        return new ConfigSources(sources, state, keyMapper.andThen(f));
+        return new ConfigSources(sources, state, keyMapper.compose(f));
     }
 
     // =================================================================================================================

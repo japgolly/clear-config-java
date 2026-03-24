@@ -42,7 +42,8 @@ public class ConfigReportTest {
     public void testWithKeyPrefix() throws Throwable {
         var source = ConfigSource.ofMap("Test", Map.of("test.need", "456"));
         var sources = ConfigSources.of(source);
-        var result = configDefWithDefaults.withKeyPrefix("test.").withReport().runOrThrow(sources);
+        var configDef = configDefWithDefaults.withKeyPrefix("test_").mapKeys(s -> s.replace('_', '.'));
+        var result = configDef.withReport().runOrThrow(sources);
         var actual = result.report().seenTable();
         var expected = """
                 +-----------------+------+---------+
