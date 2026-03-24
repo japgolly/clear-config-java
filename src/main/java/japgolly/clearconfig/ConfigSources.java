@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import japgolly.clearconfig.util.*;
@@ -56,8 +55,6 @@ public final class ConfigSources {
         }
     }
 
-    private static final Pattern IMPLICITLY_SECRET = Pattern.compile(".*(?:secret|password).*", Pattern.CASE_INSENSITIVE);
-
     public <A> Either<ErrorMsg, Optional<A>> get(String origKey, ConfigParser<A> parser, Optional<Object> defaultValue) {
         final var key = keyMapper.apply(origKey);
 
@@ -71,7 +68,7 @@ public final class ConfigSources {
         }
 
         // Mark as secret if necessary
-        if (state.inSecretBlock || IMPLICITLY_SECRET.matcher(key).matches())
+        if (state.inSecretBlock || Internals.IMPLICITLY_SECRET.matcher(key).matches())
             ctx.secret = true;
 
         ctx.defaultValue = defaultValue;

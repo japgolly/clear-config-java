@@ -121,4 +121,32 @@ public class ConfigReportTest {
         assertEquals(expected, actual);
         assertEquals("456", result.value());
     }
+
+    @Test
+    public void testUnusedTable() throws Throwable {
+        var source1 = ConfigSource.ofMap("Src1", Map.of(
+                "used", "123",
+                "unused1", "456",
+                "secret", "pw"
+        ));
+        var source2 = ConfigSource.ofMap("Src2", Map.of(
+                "used", "123",
+                "unused2", "789",
+                "secret", "pw2"
+        ));
+        var sources = ConfigSources.of(source1, source2);
+        var configDef = ConfigParser.String.need("used");
+        var result = configDef.withReport().runOrThrow(sources);
+        var actual = result.report().unusedTable();
+        var expected = """
+                +---------+-----------------------+-----------------------+
+                | Key     | Src1                  | Src2                  |
+                +---------+-----------------------+-----------------------+
+                | secret  | Obfuscated (2233E9BA) | Obfuscated (DEDDBE3A) |
+                | unused1 | 456                   |                       |
+                | unused2 |                       | 789                   |
+                +---------+-----------------------+-----------------------+
+                """.trim();
+        assertEquals(expected, actual);
+    }
 }

@@ -3,8 +3,8 @@ package japgolly.clearconfig;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import japgolly.clearconfig.ConfigSources.KeyCtx;
 import japgolly.clearconfig.util.AsciiTable;
+import japgolly.clearconfig.util.Internals;
 
 public class ConfigReport {
     private final ConfigSources sources;
@@ -22,18 +22,41 @@ public class ConfigReport {
         return AsciiTable.withHeader(header, rows);
     }
 
+    public String unusedTable() {
+        var header = sources.sources.stream().map(s -> s.name()).collect(Collectors.toList());
+        header.addFirst("Key");
+
+        var seenKeys = sources.seen().keySet();
+        var allKeys = sources.sources.stream()
+                .flatMap(s -> s.all().keySet().stream())
+                .filter(k -> !seenKeys.contains(k))
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+
+        var rows = allKeys.stream().map(this::unusedRow).collect(Collectors.toList());
+        return AsciiTable.withHeader(header, rows);
+    }
+
     private List<String> seenRow(String key) {
         var ctx = sources.seen().get(key);
-        var row = sources.sources.stream().map(s -> cell(s.get(key), ctx)).collect(Collectors.toList());
+        var row = sources.sources.stream().map(s -> cell(s.get(key), ctx.secret)).collect(Collectors.toList());
         row.addFirst(key);
-        row.addLast(cell(ctx.defaultValue.map(v -> "" + v).orElse(null), ctx));
+        row.addLast(cell(ctx.defaultValue.map(v -> "" + v).orElse(null), ctx.secret));
         return row;
     }
 
-    private String cell(String value, KeyCtx ctx) {
+    private List<String> unusedRow(String key) {
+        var secret = Internals.IMPLICITLY_SECRET.matcher(key).matches();
+        var row = sources.sources.stream().map(s -> cell(s.get(key), secret)).collect(Collectors.toList());
+        row.addFirst(key);
+        return row;
+    }
+
+    private String cell(String value, boolean secret) {
         if (value == null)
             value = "";
-        else if (ctx.secret)
+        else if (secret)
             value = String.format("Obfuscated (%08X)", (value + "!").repeat(7).hashCode());
         return value;
     }
