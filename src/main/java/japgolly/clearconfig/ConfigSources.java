@@ -19,7 +19,7 @@ public final class ConfigSources {
         return new ConfigSources(sources.stream().map(s -> f.apply(s)).toList());
     }
 
-    public <A> Either<ErrorMsg, Optional<A>> get(String key, ConfigParser<A> parser) {
+    public <A> Either<ErrorMsg, Optional<A>> get(String key, ConfigParser<A> parser, Optional<Object> defaultValue) {
         for (ConfigSource src : sources) {
             final var value = src.get(key);
             if (value != null) {

@@ -59,20 +59,24 @@ public interface ConfigParser<A> {
     }
 
     public default ConfigDef<Optional<A>> get(String key) {
-        return sources -> sources.get(key, this).mapFailure(e -> Set.of(e));
+        return sources -> sources.get(key, this, Optional.empty()).mapFailure(e -> Set.of(e));
     }
 
     public default ConfigDef<A> getOrUse(String key, A defaultValue) {
-        return sources -> get(key).run(sources).map(o -> o.orElseGet(() -> defaultValue));
+        return sources -> sources.get(key, this, Optional.of(defaultValue))
+            .mapFailure(e -> Set.of(e))
+            .map(o -> o.orElseGet(() -> defaultValue));
     }
 
     public default ConfigDef<A> getOrParse(String key, String defaultValue) {
-        return sources -> get(key).run(sources).flatMap(o -> {
-            if (o.isEmpty())
-                return parse(defaultValue).mapFailure(e -> Set.of(e));
-            else
-                return new Either.Success<>(o.get());
-        });
+        return sources -> sources.get(key, this, Optional.of(defaultValue))
+            .mapFailure(e -> Set.of(e))
+            .flatMap(o -> {
+                if (o.isEmpty())
+                    return parse(defaultValue).mapFailure(e -> Set.of(e));
+                else
+                    return new Either.Success<>(o.get());
+            });
     }
 
     public default ConfigDef<A> need(String key) {
@@ -85,6 +89,10 @@ public interface ConfigParser<A> {
     }
 
     public default <B> ConfigDef<Consumer<B>> getOptionalAndSet(String key, BiConsumer<B, Optional<A>> f) {
+        return getOptionalAndSet(key, Optional.empty(), f);
+    }
+
+    public default <B> ConfigDef<Consumer<B>> getOptionalAndSet(String key, Optional<Object> defaultValue, BiConsumer<B, Optional<A>> f) {
         return sources -> get(key).run(sources).map(o -> b -> f.accept(b, o));
     }
 
@@ -96,7 +104,7 @@ public interface ConfigParser<A> {
     }
 
     public default <B> ConfigDef<Consumer<B>> getOrUseAndSet(String key, A defaultValue, BiConsumer<B, A> f) {
-        return getOptionalAndSet(key, (b, o) -> f.accept(b, o.orElseGet(() -> defaultValue)));
+        return getOptionalAndSet(key, Optional.of(defaultValue), (b, o) -> f.accept(b, o.orElseGet(() -> defaultValue)));
     }
 
     public default <B> ConfigDef<Consumer<B>> getOrParseAndSet(String key, String defaultValue, BiConsumer<B, A> f) {
