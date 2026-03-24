@@ -22,13 +22,8 @@ public class ConfigParserTest {
     @Test
     public void string() {
         assertPass("hello", ConfigParser.String.parse("hello"));
-        assertPass("trimmed", ConfigParser.String.parse("  trimmed  "));
-        assertPass("no comment", ConfigParser.String.parse("no comment # with comment"));
-    }
-
-    @Test
-    public void stringRaw() {
-        assertPass("  hello # world  ", ConfigParser.StringRaw.parse("  hello # world  "));
+        assertPass("  trimmed  ", ConfigParser.String.parse("  trimmed  "));
+        assertPass("no comment # with comment", ConfigParser.String.parse("no comment # with comment"));
     }
 
     @Test

@@ -43,7 +43,7 @@ public class ConfigDefTest {
     @Test
     public void withoutDefaultsPass() throws UnknownHostException {
         var source = ConfigSource.ofMap("test", Map.of(
-            "port", "1234 # This is a comment",
+            "port", "1234",
             "host", "127.0.0.1"
         ));
         var sources = ConfigSources.of(source);
@@ -133,6 +133,6 @@ public class ConfigDefTest {
         assertEquals(null, s.w);
         assertEquals("eks", s.x);
         assertEquals("default #", s.y);
-        assertEquals("def", s.z);
+        assertEquals("def #", s.z);
     }
 }

@@ -132,9 +132,6 @@ public interface ConfigParser<A> {
     // ================================================================================================================
 
     public static final ConfigParser<String> String =
-        s -> new Either.Success<>(s.replaceFirst("#.*", "").trim());
-
-    public static final ConfigParser<String> StringRaw =
         s -> new Either.Success<>(s);
 
     public static final ConfigParser<Integer> Integer =
