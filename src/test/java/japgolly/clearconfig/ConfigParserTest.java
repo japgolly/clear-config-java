@@ -164,4 +164,14 @@ public class ConfigParserTest {
         var s = "a.*b";
         assertEquals(s, ConfigParser.Pattern.parse(s).getOrThrow().pattern());
     }
+
+    enum TestEnum { FOO, BAR }
+
+    @Test
+    public void enum_() {
+        var p = ConfigParser.Enum(TestEnum.class);
+        assertPass(TestEnum.FOO, p.parse("FOO"));
+        assertPass(TestEnum.BAR, p.parse("BAR"));
+        assertFail("Invalid TestEnum", p.parse("BAZ"));
+    }
 }

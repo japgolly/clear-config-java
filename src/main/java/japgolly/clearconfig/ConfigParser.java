@@ -125,6 +125,16 @@ public interface ConfigParser<A> {
         return s -> e;
     }
 
+    public static <A extends Enum<A>> ConfigParser<A> Enum(Class<A> cls) {
+        return String.flatMap(s -> {
+            try {
+                return new Either.Success<>(Enum.valueOf(cls, s));
+            } catch (IllegalArgumentException e) {
+                return new Either.Failure<>(new ErrorMsg("Invalid " + cls.getSimpleName()));
+            }
+        });
+    }
+
     // ================================================================================================================
 
     public static final ConfigParser<String> String =
