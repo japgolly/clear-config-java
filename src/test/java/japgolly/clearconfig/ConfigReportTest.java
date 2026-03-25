@@ -172,4 +172,38 @@ public class ConfigReportTest {
         var actual = report.sources();
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void testFilter() throws Throwable {
+        var source = ConfigSource.ofMap("Test", Map.of(
+                "app.used", "123",
+                "app.unused", "456",
+                "other.ignored", "789"
+        ));
+        var sources = ConfigSources.of(source).filter(k -> k.startsWith("app."));
+        var configDef = ConfigParser.String.need("app.used");
+        var result = configDef.withReport().runOrThrow(sources);
+
+        var actualUsed = result.report().used();
+        var expectedUsed = """
+                Used keys (1):
+                +----------+------+---------+
+                | Key      | Test | Default |
+                +----------+------+---------+
+                | app.used | 123  |         |
+                +----------+------+---------+
+                """.trim();
+        assertEquals(expectedUsed, actualUsed);
+
+        var actualUnused = result.report().unused();
+        var expectedUnused = """
+                Unused keys (1):
+                +------------+------+
+                | Key        | Test |
+                +------------+------+
+                | app.unused | 456  |
+                +------------+------+
+                """.trim();
+        assertEquals(expectedUnused, actualUnused);
+    }
 }

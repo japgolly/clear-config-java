@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class ConfigSource {
     private final String name;
@@ -45,6 +47,13 @@ public class ConfigSource {
                 return value == null ? null : f.apply(value);
             }
         };
+    }
+
+    public ConfigSource filter(Predicate<String> f) {
+        var allFiltered = all().entrySet().stream()
+                            .filter(e -> f.test(e.getKey()))
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return ConfigSource.ofMap(name, allFiltered);
     }
 
     // =================================================================================================================

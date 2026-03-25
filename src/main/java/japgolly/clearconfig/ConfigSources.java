@@ -99,6 +99,11 @@ public final class ConfigSources {
         return new ConfigSources(newSources, state, keyMapper);
     }
 
+    public ConfigSources filter(java.util.function.Predicate<String> f) {
+        final var newSources = sources.stream().map(s -> s.filter(f)).collect(Collectors.toList());
+        return new ConfigSources(newSources, state, keyMapper);
+    }
+
     // =================================================================================================================
 
     public static ConfigSources of() {
