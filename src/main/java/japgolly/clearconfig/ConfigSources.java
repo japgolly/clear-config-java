@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -99,7 +100,7 @@ public final class ConfigSources {
         return new ConfigSources(newSources, state, keyMapper);
     }
 
-    public ConfigSources filter(java.util.function.Predicate<String> f) {
+    public ConfigSources filter(Predicate<String> f) {
         final var newSources = sources.stream().map(s -> s.filter(f)).collect(Collectors.toList());
         return new ConfigSources(newSources, state, keyMapper);
     }
