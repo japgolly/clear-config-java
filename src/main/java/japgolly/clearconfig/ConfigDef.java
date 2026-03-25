@@ -27,6 +27,10 @@ public interface ConfigDef<A> {
         };
     }
 
+    public default <B> ConfigDef<B> map(Function<? super A, ? extends B> f) {
+        return sources -> run(sources).map(f);
+    }
+
     public default ConfigDef<A> mapKeys(Function<String, String> f) {
         return sources -> run(sources.mapKeyQueries(f));
     }

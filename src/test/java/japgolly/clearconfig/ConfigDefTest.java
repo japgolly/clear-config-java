@@ -135,4 +135,13 @@ public class ConfigDefTest {
         assertEquals("default #", s.y);
         assertEquals("def #", s.z);
     }
+
+    @Test
+    public void testMap() {
+        var source = ConfigSource.ofMap("test", Map.of("port", "123"));
+        var sources = ConfigSources.of(source);
+        var def = ConfigParser.Integer.need("port").map(i -> i * 2);
+        var result = def.run(sources);
+        assertSuccess(246, result);
+    }
 }
