@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import java.util.UUID;
 
 public class ConfigParserTest {
@@ -173,5 +174,14 @@ public class ConfigParserTest {
         assertPass(TestEnum.FOO, p.parse("FOO"));
         assertPass(TestEnum.BAR, p.parse("BAR"));
         assertFail("Invalid TestEnum", p.parse("BAZ"));
+    }
+
+    @Test
+    public void ofMap() {
+        var map = Map.of("a", 1, "b", 2);
+        ConfigParser<Integer> p = ConfigParser.ofMap(map);
+        assertPass(1, p.parse("a"));
+        assertPass(2, p.parse("b"));
+        assertFail("Invalid value", p.parse("c"));
     }
 }

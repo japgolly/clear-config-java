@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.URL;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -132,6 +133,19 @@ public interface ConfigParser<A> {
             } catch (IllegalArgumentException e) {
                 return new Either.Failure<>(new ErrorMsg("Invalid " + cls.getSimpleName()));
             }
+        });
+    }
+
+    public static <A> ConfigParser<A> ofMap(Map<String, A> map) {
+        return ofMap(map, new ErrorMsg("Invalid value"));
+    }
+
+    public static <A> ConfigParser<A> ofMap(Map<String, A> map, ErrorMsg errorMsg) {
+        return String.flatMap(s -> {
+            if (map.containsKey(s))
+                return new Either.Success<>(map.get(s));
+            else
+                return new Either.Failure<>(errorMsg);
         });
     }
 
