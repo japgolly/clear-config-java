@@ -1,5 +1,7 @@
 package japgolly.clearconfig;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -103,6 +105,21 @@ public class ConfigSource {
         if (mandatory)
             throw new FileNotFoundException(filename);
         return empty(name);
+    }
+
+    public static ConfigSource ofPropFile(String filename, Boolean mandatory) throws IOException {
+        return ofPropFile(new File(filename), mandatory);
+    }
+
+    public static ConfigSource ofPropFile(File file, Boolean mandatory) throws IOException {
+        final var name = file.getName();
+        if (!file.exists()) {
+            if (mandatory)
+                throw new FileNotFoundException(file.getAbsolutePath());
+            return empty(name);
+        }
+        final var is = new FileInputStream(file);
+        return ofPropsFromInputStream(name, is, true);
     }
 
 }
