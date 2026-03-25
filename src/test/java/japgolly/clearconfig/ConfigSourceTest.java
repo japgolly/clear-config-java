@@ -1,6 +1,7 @@
 package japgolly.clearconfig;
 
 import static org.junit.Assert.assertEquals;
+import java.io.IOException;
 import java.util.Map;
 import org.junit.Test;
 
@@ -20,5 +21,22 @@ public class ConfigSourceTest {
         var mapped = source.mapValues(s -> "[" + s + "]");
         assertEquals("[1234]", mapped.get("port"));
         assertEquals(null, mapped.get("other"));
+    }
+
+    @Test
+    public void testOfPropFileOnClasspath() throws IOException {
+        var source = ConfigSource.ofPropFileOnClasspath("test.properties", true);
+        assertEquals("9999", source.get("test.port"));
+    }
+
+    @Test
+    public void testOfPropFileOnClasspathOptional() throws IOException {
+        var source = ConfigSource.ofPropFileOnClasspath("non-existent.properties", false);
+        assertEquals(null, source.get("anything"));
+    }
+
+    @Test(expected = IOException.class)
+    public void testOfPropFileOnClasspathMandatoryFail() throws IOException {
+        ConfigSource.ofPropFileOnClasspath("non-existent.properties", true);
     }
 }

@@ -1,5 +1,8 @@
 package japgolly.clearconfig;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -64,13 +67,42 @@ public class ConfigSource {
     public static final ConfigSource SystemProps =
         ofProperties("System Properties", System.getProperties());
 
+    public static ConfigSource empty(String name) {
+        return ofMap(name, Map.of());
+    }
+
     public static ConfigSource ofMap(String name, Map<String, String> map) {
         return new ConfigSource(name, map);
     }
 
     public static ConfigSource ofProperties(String name, Properties p) {
         var map = new HashMap<String, String>();
-        p.putAll(map);
+        for (String key : p.stringPropertyNames()) {
+            map.put(key, p.getProperty(key));
+        }
         return ofMap(name, map);
     }
+
+    public static ConfigSource ofPropsFromInputStream(String name, InputStream is, Boolean close) throws IOException {
+        try {
+            var p = new Properties();
+            p.load(is);
+            return ofProperties(name, p);
+        } finally {
+            if (close)
+                is.close();
+        }
+    }
+
+    public static ConfigSource ofPropFileOnClasspath(String filename, Boolean mandatory) throws IOException {
+        filename = filename.replaceFirst("^/*", "/");
+        final var name = "cp:" + filename;
+        final var is = ConfigSource.class.getResourceAsStream(filename);
+        if (is != null)
+            return ofPropsFromInputStream(name, is, true);
+        if (mandatory)
+            throw new FileNotFoundException(filename);
+        return empty(name);
+    }
+
 }
