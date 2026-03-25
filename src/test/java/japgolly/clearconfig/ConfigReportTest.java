@@ -184,19 +184,19 @@ public class ConfigReportTest {
         var configDef = ConfigParser.String.need("app.used");
         var result = configDef.withReport().runOrThrow(sources);
 
-        var actualUsed = result.report().used();
-        var expectedUsed = """
+        var actual = result.report().full();
+        var expected = """
+                2 sources (highest to lowest priority):
+                  - Test
+                  - Default
+
                 Used keys (1):
                 +----------+------+---------+
                 | Key      | Test | Default |
                 +----------+------+---------+
                 | app.used | 123  |         |
                 +----------+------+---------+
-                """.trim();
-        assertEquals(expectedUsed, actualUsed);
 
-        var actualUnused = result.report().unused();
-        var expectedUnused = """
                 Unused keys (1):
                 +------------+------+
                 | Key        | Test |
@@ -204,6 +204,6 @@ public class ConfigReportTest {
                 | app.unused | 456  |
                 +------------+------+
                 """.trim();
-        assertEquals(expectedUnused, actualUnused);
+        assertEquals(expected, actual);
     }
 }

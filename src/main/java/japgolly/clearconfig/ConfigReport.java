@@ -13,6 +13,15 @@ public class ConfigReport {
         this.sources = sources;
     }
 
+    @Override
+    public String toString() {
+        return full();
+    }
+
+    public String full() {
+        return String.format("%s\n\n%s\n\n%s", sources(), used(), unused());
+    }
+
     public String sources() {
         var count = sources.sources.size() + 1;
         var sourceList = sources.sources.stream().map(s -> "  - " + s.name()).collect(Collectors.joining("\n"));
