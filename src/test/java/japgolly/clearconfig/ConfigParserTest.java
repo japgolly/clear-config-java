@@ -184,4 +184,14 @@ public class ConfigParserTest {
         assertPass(2, p.parse("b"));
         assertFail("Invalid value", p.parse("c"));
     }
+
+    @Test
+    public void contramap() {
+        var map = Map.of("A", 1, "B", 2);
+        ConfigParser<Integer> p = ConfigParser.ofMap(map).contramap(String::toUpperCase);
+        assertPass(1, p.parse("a"));
+        assertPass(1, p.parse("A"));
+        assertPass(2, p.parse("b"));
+        assertFail("Invalid value", p.parse("c"));
+    }
 }
