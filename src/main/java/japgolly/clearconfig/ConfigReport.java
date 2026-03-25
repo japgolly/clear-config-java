@@ -25,13 +25,13 @@ public class ConfigReport {
         header.addLast("Default");
         var keys = sources.seen().keySet().stream().sorted().collect(Collectors.toList());
         var rows = keys.stream().map(this::seenRow).collect(Collectors.toList());
-        return AsciiTable.withHeader(header, rows);
+        var table = AsciiTable.withHeader(header, rows);
+        return String.format("Used keys (%d):\n%s", rows.size(), table);
     }
 
     public String unused() {
         var header = sources.sources.stream().map(s -> s.name()).collect(Collectors.toList());
         header.addFirst("Key");
-
         var seenKeys = sources.seen().keySet();
         var allKeys = sources.sources.stream()
                 .flatMap(s -> s.all().keySet().stream())
@@ -39,9 +39,9 @@ public class ConfigReport {
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
-
         var rows = allKeys.stream().map(this::unusedRow).collect(Collectors.toList());
-        return AsciiTable.withHeader(header, rows);
+        var table = AsciiTable.withHeader(header, rows);
+        return String.format("Unused keys (%d):\n%s", rows.size(), table);
     }
 
     private List<String> seenRow(String key) {

@@ -26,6 +26,7 @@ public class ConfigReportTest {
         var result = configDefWithDefaults.withReport().runOrThrow(sources);
         var actual = result.report().used();
         var expected = """
+                Used keys (4):
                 +------------+------+---------+
                 | Key        | Test | Default |
                 +------------+------+---------+
@@ -47,6 +48,7 @@ public class ConfigReportTest {
         var result = configDef.withReport().runOrThrow(sources);
         var actual = result.report().used();
         var expected = """
+                Used keys (4):
                 +-----------------+------+---------+
                 | Key             | Test | Default |
                 +-----------------+------+---------+
@@ -74,6 +76,7 @@ public class ConfigReportTest {
         var result = configDef.withReport().runOrThrow(sources);
         var actual = result.report().used();
         var expected = """
+                Used keys (4):
                 +-------------+-----------------------+-----------------------+
                 | Key         | Test                  | Default               |
                 +-------------+-----------------------+-----------------------+
@@ -94,6 +97,7 @@ public class ConfigReportTest {
         var result = configDef.withReport().runOrThrow(sources);
         var actual = result.report().used();
         var expected = """
+                Used keys (1):
                 +------+-------+---------+
                 | Key  | Test  | Default |
                 +------+-------+---------+
@@ -112,6 +116,7 @@ public class ConfigReportTest {
         var result = configDef.withReport().runOrThrow(sources);
         var actual = result.report().used();
         var expected = """
+                Used keys (1):
                 +------+------+---------+
                 | Key  | Test | Default |
                 +------+------+---------+
@@ -139,6 +144,7 @@ public class ConfigReportTest {
         var result = configDef.withReport().runOrThrow(sources);
         var actual = result.report().unused();
         var expected = """
+                Unused keys (3):
                 +---------+-----------------------+-----------------------+
                 | Key     | Src1                  | Src2                  |
                 +---------+-----------------------+-----------------------+
