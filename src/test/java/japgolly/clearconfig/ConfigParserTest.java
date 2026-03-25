@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public class ConfigParserTest {
 
-    private <A> void assertPass(A expected, Either<ErrorMsg, A> actual) {
+    private <A> void assertPass(A expected, Either<?, A> actual) {
         assertEquals(new Either.Success<>(expected), actual);
     }
 
@@ -193,5 +193,13 @@ public class ConfigParserTest {
         assertPass(1, p.parse("A"));
         assertPass(2, p.parse("b"));
         assertFail("Invalid value", p.parse("c"));
+    }
+
+    @Test
+    public void exists() {
+        var srcs0 = ConfigSources.of();
+        var srcs1 = ConfigSources.of(ConfigSource.ofMap("X", Map.of("key", "1")));
+        assertPass(false, ConfigParser.String.exists("key").run(srcs0));
+        assertPass(true, ConfigParser.String.exists("key").run(srcs1));
     }
 }

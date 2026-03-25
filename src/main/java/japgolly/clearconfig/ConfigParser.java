@@ -59,6 +59,10 @@ public interface ConfigParser<A> {
         return s -> parse(s).flatMap(f);
     }
 
+    public default ConfigDef<Boolean> exists(String key) {
+        return get(key).map(Optional::isPresent);
+    }
+
     public default ConfigDef<Optional<A>> get(String key) {
         return sources -> sources.get(key, this, Optional.empty()).mapFailure(e -> Set.of(e));
     }
