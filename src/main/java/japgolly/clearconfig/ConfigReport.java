@@ -13,7 +13,13 @@ public class ConfigReport {
         this.sources = sources;
     }
 
-    public String seenTable() {
+    public String sources() {
+        var count = sources.sources.size() + 1;
+        var sourceList = sources.sources.stream().map(s -> "  - " + s.name()).collect(Collectors.joining("\n"));
+        return String.format("%d sources (highest to lowest priority):\n%s\n  - Default", count, sourceList);
+    }
+
+    public String used() {
         var header = sources.sources.stream().map(s -> s.name()).collect(Collectors.toList());
         header.addFirst("Key");
         header.addLast("Default");
@@ -22,7 +28,7 @@ public class ConfigReport {
         return AsciiTable.withHeader(header, rows);
     }
 
-    public String unusedTable() {
+    public String unused() {
         var header = sources.sources.stream().map(s -> s.name()).collect(Collectors.toList());
         header.addFirst("Key");
 

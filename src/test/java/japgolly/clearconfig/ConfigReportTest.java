@@ -24,7 +24,7 @@ public class ConfigReportTest {
         var source = ConfigSource.ofMap("Test", Map.of("need", "456"));
         var sources = ConfigSources.of(source);
         var result = configDefWithDefaults.withReport().runOrThrow(sources);
-        var actual = result.report().seenTable();
+        var actual = result.report().used();
         var expected = """
                 +------------+------+---------+
                 | Key        | Test | Default |
@@ -45,7 +45,7 @@ public class ConfigReportTest {
         var sources = ConfigSources.of(source);
         var configDef = configDefWithDefaults.withKeyPrefix("test_").mapKeys(s -> s.replace('_', '.'));
         var result = configDef.withReport().runOrThrow(sources);
-        var actual = result.report().seenTable();
+        var actual = result.report().used();
         var expected = """
                 +-----------------+------+---------+
                 | Key             | Test | Default |
@@ -72,7 +72,7 @@ public class ConfigReportTest {
             (a, b, c, d) -> null
         );
         var result = configDef.withReport().runOrThrow(sources);
-        var actual = result.report().seenTable();
+        var actual = result.report().used();
         var expected = """
                 +-------------+-----------------------+-----------------------+
                 | Key         | Test                  | Default               |
@@ -92,7 +92,7 @@ public class ConfigReportTest {
         var sources = ConfigSources.of(source.mapValues(s -> "[" + s + "]"));
         var configDef = ConfigParser.String.need("need");
         var result = configDef.withReport().runOrThrow(sources);
-        var actual = result.report().seenTable();
+        var actual = result.report().used();
         var expected = """
                 +------+-------+---------+
                 | Key  | Test  | Default |
@@ -110,7 +110,7 @@ public class ConfigReportTest {
         var sources = ConfigSources.of(source.mapKeyQueries(String::toUpperCase));
         var configDef = ConfigParser.String.need("need");
         var result = configDef.withReport().runOrThrow(sources);
-        var actual = result.report().seenTable();
+        var actual = result.report().used();
         var expected = """
                 +------+------+---------+
                 | Key  | Test | Default |
@@ -137,7 +137,7 @@ public class ConfigReportTest {
         var sources = ConfigSources.of(source1, source2);
         var configDef = ConfigParser.String.need("used");
         var result = configDef.withReport().runOrThrow(sources);
-        var actual = result.report().unusedTable();
+        var actual = result.report().unused();
         var expected = """
                 +---------+-----------------------+-----------------------+
                 | Key     | Src1                  | Src2                  |
@@ -147,6 +147,23 @@ public class ConfigReportTest {
                 | unused2 |                       | 789                   |
                 +---------+-----------------------+-----------------------+
                 """.trim();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testSources() throws UnsatisfiedConfigException {
+        var source = ConfigSource.ofMap("Test", Map.of());
+        var sources = ConfigSources.of(source, ConfigSource.Environment, ConfigSource.SystemProps);
+        var configDef = ConfigParser.String.get("x");
+        var report = configDef.withReport().runOrThrow(sources).report();
+        var expected = """
+                        4 sources (highest to lowest priority):
+                          - Test
+                          - Environment
+                          - System Properties
+                          - Default
+                        """.trim();
+        var actual = report.sources();
         assertEquals(expected, actual);
     }
 }
