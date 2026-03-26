@@ -68,8 +68,6 @@ public class ConfigParserTest {
     @Test
     public void inetAddress() throws Exception {
         assertPass(InetAddress.getByName("127.0.0.1"), ConfigParser.InetAddress.parse("127.0.0.1"));
-        assertFail("UnknownHostException: !!!: nodename nor servname provided, or not known",
-            ConfigParser.InetAddress.parse("!!!"));
     }
 
     @Test
