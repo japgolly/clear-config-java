@@ -122,7 +122,7 @@ Unused keys (2):
 
 First start by choosing the type of your target config value:
 
-```java
+```txt
 ConfigParser.Boolean
 ConfigParser.ChronoUnit
 ConfigParser.Double
@@ -208,6 +208,7 @@ var configDef = ConfigDef.consumer(
 
 var sources = ConfigSources.of(...);
 var consumer = configDef.runOrThrow(sources);
+
 var s = new Settable();
 consumer.accept(s); // this sets all the fields specified by the config
 ```
@@ -218,7 +219,7 @@ There is a Scala version of this library here:
 https://github.com/japgolly/clear-config
 
 
-##### Support:
+# Support
 If you like what I do
 —my OSS libraries, my contributions to other OSS libs, [my programming blog](https://japgolly.blogspot.com)—
 and you'd like to support me, more content, more lib maintenance, [please become a patron](https://www.patreon.com/japgolly)!
