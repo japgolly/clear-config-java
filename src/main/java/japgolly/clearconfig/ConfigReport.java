@@ -39,16 +39,27 @@ public class ConfigReport {
     }
 
     public String unused() {
-        var header = cfgSrcs.sources.stream().map(s -> s.name()).collect(Collectors.toList());
-        header.addFirst("Key");
         var seenKeys = cfgSrcs.seen().keySet();
-        var allKeys = cfgSrcs.sources.stream()
+
+        var allUnusedKeys = cfgSrcs.sources.stream()
                 .flatMap(s -> s.all().keySet().stream())
                 .filter(k -> !seenKeys.contains(k))
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
-        var rows = allKeys.stream().map(this::unusedRow).collect(Collectors.toList());
+
+        if (allUnusedKeys.isEmpty()) {
+            return "Unused keys (0):\nNo data to report.";
+        }
+
+        var activeSources = cfgSrcs.sources.stream()
+                .filter(s -> s.all().keySet().stream().anyMatch(allUnusedKeys::contains))
+                .collect(Collectors.toList());
+
+        var header = activeSources.stream().map(ConfigSource::name).collect(Collectors.toList());
+        header.addFirst("Key");
+
+        var rows = allUnusedKeys.stream().map(key -> unseenRow(activeSources, key)).collect(Collectors.toList());
         var table = rows.isEmpty() ? "No data to report." : AsciiTable.withHeader(header, rows);
         return String.format("Unused keys (%d):\n%s", rows.size(), table);
     }
@@ -61,9 +72,9 @@ public class ConfigReport {
         return row;
     }
 
-    private List<String> unusedRow(String key) {
+    private List<String> unseenRow(List<ConfigSource> activeSources, String key) {
         var secret = Internals.IMPLICITLY_SECRET.matcher(key).matches();
-        var row = cfgSrcs.sources.stream().map(s -> cell(s.get(key), secret)).collect(Collectors.toList());
+        var row = activeSources.stream().map(s -> cell(s.get(key), secret)).collect(Collectors.toList());
         row.addFirst(key);
         return row;
     }

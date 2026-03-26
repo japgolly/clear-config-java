@@ -174,35 +174,27 @@ public class ConfigReportTest {
     }
 
     @Test
-    public void testFilter() throws Throwable {
-        var source = ConfigSource.ofMap("Test", Map.of(
-                "app.used", "123",
-                "app.unused", "456",
-                "other.ignored", "789"
-        ));
-        var sources = ConfigSources.of(source).filter(k -> k.startsWith("app."));
-        var configDef = ConfigParser.String.need("app.used");
+    public void testUnusedTableFiltering() throws Throwable {
+        var source1 = ConfigSource.ofMap("AllUsed", Map.of("used1", "1"));
+        var source2 = ConfigSource.ofMap("Mixed", Map.of("used2", "2", "unused2", "22"));
+        var source3 = ConfigSource.ofMap("AllUnused", Map.of("unused3", "3"));
+        var source4 = ConfigSource.empty("Empty");
+        var sources = ConfigSources.of(source1, source2, source3, source4);
+        var configDef = ConfigDef.apply(
+                ConfigParser.String.need("used1"),
+                ConfigParser.String.need("used2"),
+                (a, b) -> null
+        );
         var result = configDef.withReport().runOrThrow(sources);
-
-        var actual = result.report().full();
+        var actual = result.report().unused();
         var expected = """
-                2 sources (highest to lowest priority):
-                  - Test
-                  - Default
-
-                Used keys (1):
-                +----------+------+---------+
-                | Key      | Test | Default |
-                +----------+------+---------+
-                | app.used | 123  |         |
-                +----------+------+---------+
-
-                Unused keys (1):
-                +------------+------+
-                | Key        | Test |
-                +------------+------+
-                | app.unused | 456  |
-                +------------+------+
+                Unused keys (2):
+                +---------+-------+-----------+
+                | Key     | Mixed | AllUnused |
+                +---------+-------+-----------+
+                | unused2 | 22    |           |
+                | unused3 |       | 3         |
+                +---------+-------+-----------+
                 """.trim();
         assertEquals(expected, actual);
     }
