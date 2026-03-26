@@ -188,7 +188,7 @@ public class ConfigParserTest {
     @Test
     public void contramap() {
         var map = Map.of("A", 1, "B", 2);
-        ConfigParser<Integer> p = ConfigParser.ofMap(map).contramap(String::toUpperCase);
+        ConfigParser<Integer> p = ConfigParser.ofMap(map).preprocess(String::toUpperCase);
         assertPass(1, p.parse("a"));
         assertPass(1, p.parse("A"));
         assertPass(2, p.parse("b"));

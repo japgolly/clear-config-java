@@ -27,7 +27,7 @@ public interface ConfigParser<A> {
 
     public Either<ErrorMsg, A> parseOrThrow(String s);
 
-    public default ConfigParser<A> contramap(Function<String, String> f) {
+    public default ConfigParser<A> preprocess(Function<String, String> f) {
         return s -> parse(f.apply(s));
     }
 
