@@ -2,7 +2,6 @@ package japgolly.clearconfig;
 
 import static org.junit.Assert.assertEquals;
 
-import japgolly.clearconfig.util.*;
 import org.junit.Test;
 import java.net.InetAddress;
 import java.time.Duration;
