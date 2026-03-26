@@ -116,8 +116,101 @@ Unused keys (2):
 +--------------+---------------------+-------------------+
 ```
 
+# Usage
 
+### General
 
+First start by choosing the type of your target config value:
+
+```java
+ConfigParser.Boolean
+ConfigParser.ChronoUnit
+ConfigParser.Double
+ConfigParser.Duration
+ConfigParser.Enum()
+ConfigParser.File
+ConfigParser.Float
+ConfigParser.InetAddress
+ConfigParser.Integer
+ConfigParser.LocalDate
+ConfigParser.LocalDateTime
+ConfigParser.LocalTime
+ConfigParser.Long
+ConfigParser.OffsetDateTime
+ConfigParser.ofMap()
+ConfigParser.Pattern
+ConfigParser.Period
+ConfigParser.Short
+ConfigParser.String
+ConfigParser.URI
+ConfigParser.URL
+ConfigParser.UUID
+ConfigParser.ZonedDateTime
+```
+
+Then you'll usually want to call one of the following methods:
+
+```java
+// gets value of Optional<A> if key is specified, else returns Optional.empty()
+.get(String key)
+
+// gets value of A if key is specified, else parses a default string into an A
+.getOrParse(String key, String defaultValue)
+
+// gets value of A if key is specified, else uses a default A
+.getOrUse(String key, A defaultValue)
+
+// gets value of A if key is specified, else generates an error
+.need(String key)
+```
+
+By now you'll have a `ConfigDef` value.
+You'll likely want to compose a number of them together.
+To do so, use `ConfigDef.apply(...)`, for example:
+
+```java
+public record AppConfig(int port, String host, Duration timeout) {}
+
+ConfigDef<AppConfig> appConfigDef = ConfigDef.apply(
+    ConfigParser.Integer.getOrUse("port", 8080),
+    ConfigParser.String.need("host"),
+    ConfigParser.Duration.getOrParse("timeout", "1 min 30 sec"),
+    AppConfig::new)
+```
+
+It's also common to want to namespace keys after composition.
+To do so, call `.withKeyPrefix(String prefix)`,
+or for more power, call `.mapKeys(Function<String, String> f)`.
+
+### Setters
+
+What if you've got a config model that is mutable and expects you to call setters?
+
+Firstly, instead of methods like `.getOrUse`, append `AndSet` to the name.
+Secondly, compose them all together using `ConfigDef.consumer`.
+
+Example:
+
+```java
+class Settable {
+    private String w, x, y, z;
+    public void setW(String w) { this.w = w; }
+    public void setX(String x) { this.x = x; }
+    public void setY(String y) { this.y = y; }
+    public void setZ(String z) { this.z = z; }
+}
+
+var configDef = ConfigDef.consumer(
+    ConfigParser.String.needAndSet      ("w",            Settable::setW),
+    ConfigParser.String.getAndSet       ("x",            Settable::setX),
+    ConfigParser.String.getOrUseAndSet  ("y", "default", Settable::setY),
+    ConfigParser.String.getOrParseAndSet("z", "default", Settable::setZ));
+
+var sources = ConfigSources.of(...);
+var consumer = configDef.runOrThrow(sources);
+var s = new Settable();
+consumer.accept(s); // this sets all the fields specified by the config
+```
 
 # Scala version
 
