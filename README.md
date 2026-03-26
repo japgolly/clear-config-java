@@ -115,3 +115,18 @@ Unused keys (2):
 | demo.prot    | 1234                |                   |
 +--------------+---------------------+-------------------+
 ```
+
+
+
+
+# Scala version
+
+There is a Scala version of this library here:
+https://github.com/japgolly/clear-config
+
+
+##### Support:
+If you like what I do
+—my OSS libraries, my contributions to other OSS libs, [my programming blog](https://japgolly.blogspot.com)—
+and you'd like to support me, more content, more lib maintenance, [please become a patron](https://www.patreon.com/japgolly)!
+I do all my OSS work unpaid so showing your support will make a big difference.
