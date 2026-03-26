@@ -277,7 +277,24 @@ TODO
 
 ### Logback
 
-TODO
+Have you ever wondered what configuration keys your `logback.xml` depends on?
+Often, logging configuration is managed separately from application configuration, making it difficult to see the full picture of what keys your application actually uses.
+
+ClearConfig provides `ConfigDef.logbackXmlOnClasspath()` which scans your logback configuration files for variable substitutions like `${LOG_LEVEL:-INFO}`.
+
+By composing this into your main `ConfigDef`, those keys will appear in your configuration report just like any other key, providing complete transparency.
+
+Example:
+
+```java
+// Sample application config
+var appConfigDef = ConfigParser.Integer.getOrUse("port", 8080);
+
+// Compose app config with logback config
+var fullConfigDef = ConfigDef.logbackXmlOnClasspath().andThen(appConfigDef);
+```
+
+This ensures that even "hidden" configuration dependencies in your XML files are brought to light in your configuration reports.
 
 # Scala version
 
