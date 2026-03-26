@@ -235,16 +235,16 @@ public class SecretExample {
     public static void main(String[] args) {
         ConfigDef<DbConfig> dbConfigDef = ConfigDef.apply(
             ConfigParser.String.need("db.url"),
-            ConfigParser.String.need("db.password"),      // Automatically obfuscated due to name
+            ConfigParser.String.need("db.password"), // Automatically obfuscated due to name
             ConfigParser.String.need("api.key").secret(), // Manually obfuscated
             DbConfig::new
         );
 
         ConfigSources sources = ConfigSources.of(
-            ConfigSource.ofMap("Env", Map.of(
-                "db.url", "jdbc:postgresql://localhost/db",
+            ConfigSource.ofMap("Demo", Map.of(
+                "db.url",      "jdbc:postgresql://localhost/db",
                 "db.password", "super-secret-password",
-                "api.key", "12345-ABCDE"
+                "api.key",     "12345-ABCDE"
             ))
         );
 
@@ -259,7 +259,7 @@ Output:
 ```txt
 Used keys (3):
 +-------------+--------------------------------+---------+
-| Key         | Env                            | Default |
+| Key         | Demo                           | Default |
 +-------------+--------------------------------+---------+
 | api.key     | Obfuscated (5CE2935F)          |         |
 | db.password | Obfuscated (EFE34FBF)          |         |
@@ -288,10 +288,10 @@ Example:
 
 ```java
 // Sample application config
-var appConfigDef = ConfigParser.Integer.getOrUse("port", 8080);
+ConfigDef<Integer> appConfigDef = ConfigParser.Integer.getOrUse("port", 8080);
 
 // Compose app config with logback config
-var fullConfigDef = ConfigDef.logbackXmlOnClasspath().andThen(appConfigDef);
+ConfigDef<Integer> fullConfigDef = ConfigDef.logbackXmlOnClasspath().andThen(appConfigDef);
 ```
 
 This ensures that even "hidden" configuration dependencies in your XML files are brought to light in your configuration reports.
