@@ -116,8 +116,8 @@ public class ConfigDefTest {
     }
 
     @Test
-    public void setters() throws UnsatisfiedConfigException {
-        var configDef = ConfigDef.setters(
+    public void consumer() throws UnsatisfiedConfigException {
+        var configDef = ConfigDef.consumer(
             ConfigParser.String.needAndSet("v", Settable::setV),
             ConfigParser.String.getAndSet("w", Settable::setW),
             ConfigParser.String.getAndSet("x", Settable::setX),
