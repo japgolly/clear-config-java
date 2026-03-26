@@ -287,13 +287,6 @@ ConfigParser<Integer> binaryParser = s -> {
 };
 ```
 
-Because unchecked exceptions are automatically caught, this can be even simpler:
-
-```java
-ConfigParser<Integer> binaryParser =
-    ConfigParser.String.map(s -> Integer.parseInt(s, 2));
-```
-
 #### Transforming existing parsers
 
 You can use `map`, `flatMap`, and `preprocess` to adapt existing parsers.
@@ -301,6 +294,13 @@ You can use `map`, `flatMap`, and `preprocess` to adapt existing parsers.
 * `map(A -> B)`: Transform the successfully parsed value.
 * `flatMap(A -> Either<ErrorMsg, B>)`: Transform the successfully parsed value.
 * `preprocess(String -> String)`: Transform the input string *before* it is parsed.
+
+Example using `map` (unchecked exceptions are automatically caught and handled):
+
+```java
+ConfigParser<Integer> binaryParser =
+    ConfigParser.String.map(s -> Integer.parseInt(s, 2));
+```
 
 Example using `preprocess` for a case-insensitive map lookup:
 
