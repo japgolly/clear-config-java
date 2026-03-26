@@ -287,6 +287,13 @@ ConfigParser<Integer> binaryParser = s -> {
 };
 ```
 
+Because unchecked exceptions are automatically caught, this can be even simpler:
+
+```java
+ConfigParser<Integer> binaryParser =
+    ConfigParser.String.map(s -> Integer.parseInt(s, 2));
+```
+
 #### Transforming existing parsers
 
 You can use `map`, `flatMap`, and `preprocess` to adapt existing parsers.
