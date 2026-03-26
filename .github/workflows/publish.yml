@@ -23,6 +23,11 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
 
+      - name: Set version
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          mvn versions:set -DnewVersion=$VERSION
+
       - name: Publish to Maven Central
         run: mvn -B deploy
         env:
