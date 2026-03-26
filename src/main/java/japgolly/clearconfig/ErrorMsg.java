@@ -1,4 +1,4 @@
-package japgolly.clearconfig.util;
+package japgolly.clearconfig;
 
 public record ErrorMsg(String msg) {
 

@@ -277,7 +277,6 @@ A `ConfigParser<A>` is simply a functional interface that takes a `String` and r
 
 ```java
 import japgolly.clearconfig.*;
-import japgolly.clearconfig.util.Either;
 
 ConfigParser<Integer> binaryParser = s -> {
     try {

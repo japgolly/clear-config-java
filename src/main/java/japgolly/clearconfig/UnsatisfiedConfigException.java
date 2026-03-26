@@ -3,8 +3,6 @@ package japgolly.clearconfig;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import japgolly.clearconfig.util.ErrorMsg;
-
 public class UnsatisfiedConfigException extends Exception {
 
     public UnsatisfiedConfigException(String msg) {

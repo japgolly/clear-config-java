@@ -1,4 +1,4 @@
-package japgolly.clearconfig.util;
+package japgolly.clearconfig;
 
 import static org.junit.Assert.assertEquals;
 import java.util.function.Supplier;
