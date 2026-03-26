@@ -213,6 +213,72 @@ var s = new Settable();
 consumer.accept(s); // this sets all the fields specified by the config
 ```
 
+### Secrets
+
+Security is a first-class citizen in ClearConfig.
+When generating reports, sensitive values are automatically obfuscated to prevent accidental exposure in logs or UI.
+
+There are two ways a value is considered a secret:
+
+1. **Implicitly**: If a configuration key contains the word "password" or "secret" (case-insensitive), it is automatically treated as a secret.
+2. **Explicitly**: You can manually mark any `ConfigDef` as a secret by calling the `.secret()` method.
+
+Example:
+
+```java
+import japgolly.clearconfig.*;
+import java.util.Map;
+
+public class SecretExample {
+    public record DbConfig(String url, String password, String apiKey) {}
+
+    public static void main(String[] args) {
+        ConfigDef<DbConfig> dbConfigDef = ConfigDef.apply(
+            ConfigParser.String.need("db.url"),
+            ConfigParser.String.need("db.password"),      // Automatically obfuscated due to name
+            ConfigParser.String.need("api.key").secret(), // Manually obfuscated
+            DbConfig::new
+        );
+
+        ConfigSources sources = ConfigSources.of(
+            ConfigSource.ofMap("Env", Map.of(
+                "db.url", "jdbc:postgresql://localhost/db",
+                "db.password", "super-secret-password",
+                "api.key", "12345-ABCDE"
+            ))
+        );
+
+        var result = dbConfigDef.withReport().runOrThrow(sources);
+        System.out.println(result.report().used());
+    }
+}
+```
+
+Output:
+
+```txt
+Used keys (3):
++-------------+--------------------------------+---------+
+| Key         | Env                            | Default |
++-------------+--------------------------------+---------+
+| api.key     | Obfuscated (5CE2935F)          |         |
+| db.password | Obfuscated (EFE34FBF)          |         |
+| db.url      | jdbc:postgresql://localhost/db |         |
++-------------+--------------------------------+---------+
+```
+
+### Custom Parsers
+
+TODO
+
+### External
+
+TODO
+
+### Logback
+
+TODO
+
 # Scala version
 
 There is a Scala version of this library here:
