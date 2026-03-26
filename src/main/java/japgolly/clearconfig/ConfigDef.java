@@ -1,5 +1,6 @@
 package japgolly.clearconfig;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,10 @@ public interface ConfigDef<A> {
             var ea = self.run(sources);
             return ea.map(a -> new ConfigReportAndValue<>(new ConfigReport(sources), a));
         };
+    }
+
+    public default <B> ConfigDef<B> andThen(ConfigDef<B> next) {
+        return ConfigDef.apply(this, next, (a, b) -> b);
     }
 
     public default <B> ConfigDef<B> map(Function<? super A, ? extends B> f) {
@@ -57,7 +62,7 @@ public interface ConfigDef<A> {
     public static ConfigDef<Void> external(String... keys) {
         var result = unit();
         for (String key : keys) {
-            result = apply(result, ConfigParser.String.get(key), (a, b) -> null);
+            result = ConfigParser.String.get(key).andThen(result);
         }
         return result;
     }
@@ -85,6 +90,30 @@ public interface ConfigDef<A> {
                 return new Either.Failure<>(errors);
             }
         };
+    }
+
+    /** Scans logback xml files for environment variables so that they can appear in a config report.
+      *
+      * Support for nested substitutions is limited.
+      * If a nested substitution cannot be parsed, a warning will be emitted to stderr, in which case
+      * you are advised to write your own ConfigDef composition rather than relying on this method.
+      */
+    public static ConfigDef<Void> logbackXmlOnClasspath() throws IOException {
+        return logbackXmlOnClasspath("logback-test.xml", "logback.xml");
+    }
+
+    /** Scans logback xml files for environment variables so that they can appear in a config report.
+      *
+      * Support for nested substitutions is limited.
+      * If a nested substitution cannot be parsed, a warning will be emitted to stderr, in which case
+      * you are advised to write your own ConfigDef composition rather than relying on this method.
+      */
+    public static ConfigDef<Void> logbackXmlOnClasspath(String filename, String... otherFilenames) throws IOException {
+        final var content = IOUtil.readFirstResource(filename, otherFilenames);
+        if (content.isPresent())
+            return Logback.logbackXmlContent(content.get());
+        else
+            return unit();
     }
 
     // =================================================================================================================

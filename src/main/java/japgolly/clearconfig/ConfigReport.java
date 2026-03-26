@@ -34,7 +34,7 @@ public class ConfigReport {
         header.addLast("Default");
         var keys = cfgSrcs.seen().keySet().stream().sorted().collect(Collectors.toList());
         var rows = keys.stream().map(this::seenRow).collect(Collectors.toList());
-        var table = AsciiTable.withHeader(header, rows);
+        var table = rows.isEmpty() ? "No data to report." : AsciiTable.withHeader(header, rows);
         return String.format("Used keys (%d):\n%s", rows.size(), table);
     }
 
@@ -49,7 +49,7 @@ public class ConfigReport {
                 .sorted()
                 .collect(Collectors.toList());
         var rows = allKeys.stream().map(this::unusedRow).collect(Collectors.toList());
-        var table = AsciiTable.withHeader(header, rows);
+        var table = rows.isEmpty() ? "No data to report." : AsciiTable.withHeader(header, rows);
         return String.format("Unused keys (%d):\n%s", rows.size(), table);
     }
 
