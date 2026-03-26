@@ -31,7 +31,7 @@ public class ConfigParserTest {
     public void integer() {
         assertPass(123, ConfigParser.Integer.parse("123"));
         assertPass(-45, ConfigParser.Integer.parse("-45"));
-        assertFail("java.lang.NumberFormatException", ConfigParser.Integer.parse("what"));
+        assertFail("NumberFormatException: For input string: \"what\"", ConfigParser.Integer.parse("what"));
     }
 
     @Test
@@ -68,7 +68,8 @@ public class ConfigParserTest {
     @Test
     public void inetAddress() throws Exception {
         assertPass(InetAddress.getByName("127.0.0.1"), ConfigParser.InetAddress.parse("127.0.0.1"));
-        assertFail("Invalid InetAddress", ConfigParser.InetAddress.parse("!!!"));
+        assertFail("UnknownHostException: !!!: nodename nor servname provided, or not known",
+            ConfigParser.InetAddress.parse("!!!"));
     }
 
     @Test
@@ -146,13 +147,14 @@ public class ConfigParserTest {
     @Test
     public void uri() {
         assertPass(java.net.URI.create("https://google.com"), ConfigParser.URI.parse("https://google.com"));
-        assertFail("Invalid URI", ConfigParser.URI.parse("http://[:::1]"));
+        assertFail("URISyntaxException: Expected hex digits or IPv4 address at index 10: http://[:::1]",
+            ConfigParser.URI.parse("http://[:::1]"));
     }
 
     @Test
     public void url() throws Exception {
         assertPass(new java.net.URI("https://google.com").toURL(), ConfigParser.URL.parse("https://google.com"));
-        assertFail("Invalid URL", ConfigParser.URL.parse("abc"));
+        assertFail("IllegalArgumentException: URI is not absolute", ConfigParser.URL.parse("abc"));
     }
 
     @Test

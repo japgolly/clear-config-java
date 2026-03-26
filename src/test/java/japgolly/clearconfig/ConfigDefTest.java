@@ -77,7 +77,7 @@ public class ConfigDefTest {
         var def = ConfigParser.Integer.need("port");
         var result = def.run(sources);
         assertFailure(Set.of(
-            ErrorMsg.parsingError(new NumberFormatException()).addKeyValueContext("port", "x")
+            new ErrorMsg("Failed to parse key \"port\" with value \"x\": NumberFormatException: For input string: \"x\"")
         ), result);
     }
 

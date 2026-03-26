@@ -192,7 +192,7 @@ public interface ConfigParser<A> {
             try {
                 return new Either.Success<>(java.net.InetAddress.getByName(s));
             } catch (Exception e) {
-                return new Either.Failure<>(new ErrorMsg("Invalid InetAddress"));
+                return new Either.Failure<>(ErrorMsg.parsingError(e));
             }
         });
 
@@ -232,7 +232,7 @@ public interface ConfigParser<A> {
             try {
                 return new Either.Success<>(new java.net.URI(s));
             } catch (Exception e) {
-                return new Either.Failure<>(new ErrorMsg("Invalid URI"));
+                return new Either.Failure<>(ErrorMsg.parsingError(e));
             }
         });
 
@@ -241,7 +241,7 @@ public interface ConfigParser<A> {
             try {
                 return new Either.Success<>(u.toURL());
             } catch (Exception e) {
-                return new Either.Failure<>(new ErrorMsg("Invalid URL"));
+                return new Either.Failure<>(ErrorMsg.parsingError(e));
             }
         });
 
