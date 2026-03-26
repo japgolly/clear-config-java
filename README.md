@@ -269,11 +269,52 @@ Used keys (3):
 
 ### Custom Parsers
 
-TODO
+You can easily create your own parsers or transform existing ones.
 
-### External
+#### Creating a parser from scratch
 
-TODO
+A `ConfigParser<A>` is simply a functional interface that takes a `String` and returns an `Either<ErrorMsg, A>`.
+
+```java
+import japgolly.clearconfig.*;
+import japgolly.clearconfig.util.Either;
+
+ConfigParser<Integer> binaryParser = s -> {
+    try {
+        return new Either.Success<>(Integer.parseInt(s, 2));
+    } catch (NumberFormatException e) {
+        return new Either.Failure<>(new ErrorMsg("Invalid binary number"));
+    }
+};
+```
+
+#### Transforming existing parsers
+
+You can use `map`, `flatMap`, and `preprocess` to adapt existing parsers.
+
+* `map(A -> B)`: Transform the successfully parsed value.
+* `flatMap(A -> Either<ErrorMsg, B>)`: Transform the successfully parsed value.
+* `preprocess(String -> String)`: Transform the input string *before* it is parsed.
+
+Example using `preprocess` for a case-insensitive map lookup:
+
+```java
+import java.util.Map;
+import japgolly.clearconfig.*;
+
+Map<String, Integer> protocolMap = Map.of(
+    "HTTP", 80,
+    "HTTPS", 443,
+    "SSH", 22
+);
+
+// Create a parser that is case-insensitive by preprocessing input to uppercase
+// This will now successfully parse "http", "  Ssh ", etc.
+ConfigParser<Integer> protocolParser = ConfigParser
+    .ofMap(protocolMap)
+    .preprocess(String::trim)
+    .preprocess(String::toUpperCase);
+```
 
 ### Logback
 
