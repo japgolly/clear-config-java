@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -42,6 +43,27 @@ public interface ConfigDef<A> {
 
     public default ConfigDef<A> withKeyPrefix(String prefix) {
         return mapKeys(s -> prefix + s);
+    }
+
+    /**
+     * If an A can be constructed successfully, it is wrapped in Optional.
+     * If an A cannot be constructed because not all keys have values, then an empty Optional is returned.
+     * Any other types of errors (e.g. parsing errors) are preserved.
+     */
+    public default ConfigDef<Optional<A>> whenFullySpecified() {
+        final var self = this;
+        return sources -> {
+            var result = self.run(sources).map(Optional::of);
+            return switch (result) {
+                case Either.Success<Set<ErrorMsg>, Optional<A>> s -> s;
+                case Either.Failure<Set<ErrorMsg>, Optional<A>> f -> {
+                    if (f.failure().stream().allMatch(ErrorMsg::isMissingKey))
+                        yield new Either.Success<>(Optional.empty());
+                    else
+                        yield f;
+                }
+            };
+        };
     }
 
     public default A runOrThrow(ConfigSources sources) throws UnsatisfiedConfigException {

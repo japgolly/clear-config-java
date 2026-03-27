@@ -2,8 +2,14 @@ package japgolly.clearconfig;
 
 public record ErrorMsg(String msg) {
 
+    public boolean isMissingKey() {
+        return msg.startsWith(MISSING_KEY_PREFIX);
+    }
+
+    private static final String MISSING_KEY_PREFIX = "Missing key: ";
+
     public static ErrorMsg missingKey(String key) {
-        return new ErrorMsg("Missing key: " + key);
+        return new ErrorMsg(MISSING_KEY_PREFIX + key);
     }
 
     public static ErrorMsg parsingError(Throwable e) {

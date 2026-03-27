@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.Test;
 
@@ -141,5 +142,39 @@ public class ConfigDefTest {
         var def = ConfigParser.Integer.need("port").map(i -> i * 2);
         var result = def.run(sources);
         assertSuccess(246, result);
+    }
+
+    @Test
+    public void testWhenFullySpecifiedFull() {
+        var source = ConfigSource.ofMap("test", Map.of(
+            "port", "1234",
+            "host", "127.0.0.1"
+        ));
+        var sources = ConfigSources.of(source);
+        var result = configDefWithoutDefaults.whenFullySpecified().run(sources).map(Optional::isPresent);
+        assertSuccess(true, result);
+    }
+
+    @Test
+    public void testWhenFullySpecifiedPartial() {
+        var source = ConfigSource.ofMap("test", Map.of(
+            "host", "127.0.0.1"
+        ));
+        var sources = ConfigSources.of(source);
+        var result = configDefWithoutDefaults.whenFullySpecified().run(sources).map(Optional::isPresent);
+        assertSuccess(false, result);
+    }
+
+    @Test
+    public void testWhenFullySpecifiedError() {
+        var source = ConfigSource.ofMap("test", Map.of(
+            "port", "x",
+            "host", "127.0.0.1"
+        ));
+        var sources = ConfigSources.of(source);
+        var result = configDefWithoutDefaults.whenFullySpecified().run(sources).map(Optional::isPresent);
+        assertFailure(Set.of(
+            new ErrorMsg("Failed to parse key \"port\" with value \"x\": NumberFormatException: For input string: \"x\"")
+        ), result);
     }
 }
