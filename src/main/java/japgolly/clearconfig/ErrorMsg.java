@@ -1,5 +1,8 @@
 package japgolly.clearconfig;
 
+/**
+ * An error message describing a configuration failure (e.g., missing key, parsing error).
+ */
 public record ErrorMsg(String msg) {
 
     public boolean isMissingKey() {

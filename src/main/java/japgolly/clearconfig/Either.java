@@ -4,6 +4,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+/**
+ * A type that represents one of two possible values (a Success or a Failure).
+ */
 public sealed interface Either<E, A> {
 
     record Success<E, A>(A value) implements Either<E, A> {

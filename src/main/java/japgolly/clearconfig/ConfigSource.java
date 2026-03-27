@@ -12,6 +12,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * A source of configuration data, typically representing a file, environment variables, or system properties.
+ *
+ * Each source has a name (for reporting) and a set of key-value pairs.
+ */
 public class ConfigSource {
     private final String name;
     private final Map<String, String> all;
@@ -25,14 +30,23 @@ public class ConfigSource {
         return name;
     }
 
+    /**
+     * Returns all key-value pairs in this source.
+     */
     public Map<String, String> all() {
         return all;
     }
 
+    /**
+     * Retrieves the value for the given key, or null if not found.
+     */
     public String get(String key) {
         return all().get(key);
     }
 
+    /**
+     * Returns a new ConfigSource that applies the given transformation to all keys looked up.
+     */
     public ConfigSource mapKeyQueries(Function<String, String> f) {
         var self = this;
         return new ConfigSource(name, all) {
@@ -43,6 +57,9 @@ public class ConfigSource {
         };
     }
 
+    /**
+     * Returns a new ConfigSource that applies the given transformation to all values retrieved.
+     */
     public ConfigSource mapValues(Function<String, String> f) {
         var self = this;
         return new ConfigSource(name, all) {
@@ -54,6 +71,9 @@ public class ConfigSource {
         };
     }
 
+    /**
+     * Returns a new ConfigSource that only contains keys matching the given predicate.
+     */
     public ConfigSource filter(Predicate<String> f) {
         var allFiltered = all().entrySet().stream()
                             .filter(e -> f.test(e.getKey()))
@@ -63,9 +83,11 @@ public class ConfigSource {
 
     // =================================================================================================================
 
+    /** Environment variables. */
     public static final ConfigSource Environment =
         ofMap("Environment", System.getenv());
 
+    /** Java System Properties. */
     public static final ConfigSource SystemProps =
         ofProperties("System Properties", System.getProperties());
 
@@ -73,10 +95,12 @@ public class ConfigSource {
         return ofMap(name, Map.of());
     }
 
+    /** Creates a source from a Map. */
     public static ConfigSource ofMap(String name, Map<String, String> map) {
         return new ConfigSource(name, map);
     }
 
+    /** Creates a source from Java Properties. */
     public static ConfigSource ofProperties(String name, Properties p) {
         var map = new HashMap<String, String>();
         for (String key : p.stringPropertyNames()) {
@@ -85,6 +109,7 @@ public class ConfigSource {
         return ofMap(name, map);
     }
 
+    /** Creates a source from an InputStream containing Java Properties. */
     public static ConfigSource ofPropsFromInputStream(String name, InputStream is, Boolean close) throws IOException {
         try {
             var p = new Properties();
@@ -96,6 +121,7 @@ public class ConfigSource {
         }
     }
 
+    /** Creates a source from a Java Properties file on the classpath. */
     public static ConfigSource ofPropFileOnClasspath(String filename, Boolean mandatory) throws IOException {
         filename = filename.replaceFirst("^/*", "/");
         final var name = "cp:" + filename;
@@ -107,10 +133,12 @@ public class ConfigSource {
         return empty(name);
     }
 
+    /** Creates a source from a Java Properties file. */
     public static ConfigSource ofPropFile(String filename, Boolean mandatory) throws IOException {
         return ofPropFile(new File(filename), mandatory);
     }
 
+    /** Creates a source from a Java Properties file. */
     public static ConfigSource ofPropFile(File file, Boolean mandatory) throws IOException {
         final var name = file.getName();
         if (!file.exists()) {

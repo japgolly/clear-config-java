@@ -17,6 +17,10 @@ import java.util.regex.Pattern;
 import japgolly.clearconfig.util.*;
 
 public interface ConfigParser<A> {
+
+    /**
+     * Parses the given string into an A, or returns an error message.
+     */
     public default Either<ErrorMsg, A> parse(String s) {
         try {
             return parseOrThrow(s);
@@ -25,16 +29,30 @@ public interface ConfigParser<A> {
         }
     }
 
+    /**
+     * Parses the given string into an A, or throws an exception.
+     * This method is intended to be implemented by custom parsers.
+     */
     public Either<ErrorMsg, A> parseOrThrow(String s);
 
+    /**
+     * Preprocesses the input string before it is passed to this parser.
+     * Useful for trimming, case conversion, or mapping legacy values.
+     */
     public default ConfigParser<A> preprocess(Function<String, String> f) {
         return s -> parse(f.apply(s));
     }
 
+    /**
+     * Transforms the successfully-parsed value of this parser.
+     */
     public default <B> ConfigParser<B> map(Function<? super A, ? extends B> f) {
         return flatMap(a -> new Either.Success<>(f.apply(a)));
     }
 
+    /**
+     * Transforms the successfully-parsed value of this parser, failing if the result is null.
+     */
     public default <B> ConfigParser<B> mapToNonNull(Function<? super A, ? extends B> f, ErrorMsg errorMsg) {
         return flatMap(a -> {
             var b = f.apply(a);
@@ -45,6 +63,9 @@ public interface ConfigParser<A> {
         });
     }
 
+    /**
+     * Transforms the successfully-parsed value of this parser, failing if the result is an empty Optional.
+     */
     public default <B> ConfigParser<B> mapToNonEmpty(Function<? super A, ? extends Optional<B>> f, ErrorMsg errorMsg) {
         return flatMap(a -> {
             var o = f.apply(a);
@@ -55,24 +76,41 @@ public interface ConfigParser<A> {
         });
     }
 
+    /**
+     * Chains this parser with another parsing step.
+     */
     public default <B> ConfigParser<B> flatMap(Function<? super A, Either<ErrorMsg, B>> f) {
         return s -> parse(s).flatMap(f);
     }
 
+    /**
+     * Creates a ConfigDef that checks if a configuration key is specified.
+     */
     public default ConfigDef<Boolean> exists(String key) {
         return get(key).map(Optional::isPresent);
     }
 
+    /**
+     * Creates a ConfigDef that optionally retrieves and parses a value for the given key.
+     */
     public default ConfigDef<Optional<A>> get(String key) {
         return sources -> sources.get(key, this, Optional.empty()).mapFailure(e -> Set.of(e));
     }
 
+    /**
+     * Creates a ConfigDef that retrieves and parses a value for the given key, falling back to
+     * the provided default value if the key is missing.
+     */
     public default ConfigDef<A> getOrUse(String key, A defaultValue) {
         return sources -> sources.get(key, this, Optional.of(defaultValue))
             .mapFailure(e -> Set.of(e))
             .map(o -> o.orElseGet(() -> defaultValue));
     }
 
+    /**
+     * Creates a ConfigDef that retrieves and parses a value for the given key, falling back to
+     * parsing the provided default string if the key is missing.
+     */
     public default ConfigDef<A> getOrParse(String key, String defaultValue) {
         return sources -> sources.get(key, this, Optional.of(defaultValue))
             .mapFailure(e -> Set.of(e))
@@ -84,6 +122,9 @@ public interface ConfigParser<A> {
             });
     }
 
+    /**
+     * Creates a ConfigDef that requires a value to be present and successfully parsed for the given key.
+     */
     public default ConfigDef<A> need(String key) {
         return sources -> get(key).run(sources).flatMap(o -> {
             if (o.isEmpty())
@@ -134,6 +175,7 @@ public interface ConfigParser<A> {
         return s -> e;
     }
 
+    /** Parses an Enum of the given class. Case-sensitive. */
     public static <A extends Enum<A>> ConfigParser<A> Enum(Class<A> cls) {
         return String.flatMap(s -> {
             try {
@@ -144,10 +186,12 @@ public interface ConfigParser<A> {
         });
     }
 
+    /** Parses a value by looking it up in the provided map. */
     public static <A> ConfigParser<A> ofMap(Map<String, A> map) {
         return ofMap(map, new ErrorMsg("Invalid value"));
     }
 
+    /** Parses a value by looking it up in the provided map, using the given error message on failure. */
     public static <A> ConfigParser<A> ofMap(Map<String, A> map, ErrorMsg errorMsg) {
         return String.flatMap(s -> {
             if (map.containsKey(s))
@@ -199,11 +243,13 @@ public interface ConfigParser<A> {
     public static final ConfigParser<UUID> UUID =
         String.map(java.util.UUID::fromString);
 
+    /** Parses time units (e.g., "s", "seconds", "ms", "millis", "m", "minutes"). Case-insensitive. */
     public static final ConfigParser<ChronoUnit> ChronoUnit =
         String.mapToNonNull(
             s -> Internals.textToChronoUnitMap().get(s.toLowerCase()),
             new ErrorMsg("Invalid ChronoUnit"));
 
+    /** Parses durations (e.g., "10s", "5 minutes", "1h 30m", "100ms"). Case-insensitive. */
     public static final ConfigParser<Duration> Duration =
         String.mapToNonNull(
             s -> Internals.parseDuration(s.toLowerCase()),

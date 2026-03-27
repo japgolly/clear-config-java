@@ -6,6 +6,12 @@ import java.util.stream.Collectors;
 import japgolly.clearconfig.util.AsciiTable;
 import japgolly.clearconfig.util.Internals;
 
+/**
+ * A detailed report of the configuration lookup process.
+ *
+ * Includes information about all sources, all keys looked up (used), and all keys present in sources
+ * but not looked up (unused).
+ */
 public class ConfigReport {
     private final ConfigSources cfgSrcs;
 

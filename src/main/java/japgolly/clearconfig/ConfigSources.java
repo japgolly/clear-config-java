@@ -12,6 +12,12 @@ import java.util.stream.Collectors;
 
 import japgolly.clearconfig.util.*;
 
+/**
+ * A collection of prioritised configuration sources.
+ *
+ * This class also manages the state of which keys have been looked up, which is used to generate
+ * configuration reports.
+ */
 public final class ConfigSources {
     final List<ConfigSource> sources;
     private final State state;
@@ -42,10 +48,17 @@ public final class ConfigSources {
         this.keyMapper = keyMapper;
     }
 
+    /**
+     * Returns a new ConfigSources where each source has been transformed by the given function.
+     */
     public ConfigSources map(Function<ConfigSource, ConfigSource> f) {
         return new ConfigSources(sources.stream().map(s -> f.apply(s)).toList(), state, keyMapper);
     }
 
+    /**
+     * Executes the given supplier in a "secret block", meaning all configuration keys looked up
+     * within it will be marked as secrets in reports.
+     */
     public <A> A secretly(Supplier<A> f) {
         final var prev = state.inSecretBlock;
         state.inSecretBlock = true;
@@ -56,6 +69,9 @@ public final class ConfigSources {
         }
     }
 
+    /**
+     * Retrieves a value for the given key from the prioritised sources.
+     */
     public <A> Either<ErrorMsg, Optional<A>> get(String origKey, ConfigParser<A> parser, Optional<Object> defaultValue) {
         final var key = keyMapper.apply(origKey);
 
@@ -91,15 +107,24 @@ public final class ConfigSources {
         return new Either.Success<>(Optional.empty());
     }
 
+    /**
+     * Returns a new ConfigSources that applies the given transformation to all key lookups.
+     */
     public ConfigSources mapKeyQueries(Function<String, String> f) {
         return new ConfigSources(sources, state, keyMapper.compose(f));
     }
 
+    /**
+     * Returns a new ConfigSources where values from all sources are transformed.
+     */
     public ConfigSources mapValues(Function<String, String> f) {
         final var newSources = sources.stream().map(s -> s.mapValues(f)).collect(Collectors.toList());
         return new ConfigSources(newSources, state, keyMapper);
     }
 
+    /**
+     * Returns a new ConfigSources where all sources are filtered.
+     */
     public ConfigSources filter(Predicate<String> f) {
         final var newSources = sources.stream().map(s -> s.filter(f)).collect(Collectors.toList());
         return new ConfigSources(newSources, state, keyMapper);
@@ -107,45 +132,47 @@ public final class ConfigSources {
 
     // =================================================================================================================
 
+    /** No sources. */
     public static ConfigSources of() {
         return new ConfigSources(List.of());
     }
 
+    /** A single source. */
     public static ConfigSources of(ConfigSource s1) {
         return new ConfigSources(List.of(s1));
     }
 
-    /** Highest priority first */
+    /** Prioritised sources, highest priority first. */
     public static ConfigSources of(ConfigSource s1, ConfigSource s2) {
         return new ConfigSources(List.of(s1, s2));
     }
 
-    /** Highest priority first */
+    /** Prioritised sources, highest priority first. */
     public static ConfigSources of(ConfigSource s1, ConfigSource s2, ConfigSource s3) {
         return new ConfigSources(List.of(s1, s2, s3));
     }
 
-    /** Highest priority first */
+    /** Prioritised sources, highest priority first. */
     public static ConfigSources of(ConfigSource s1, ConfigSource s2, ConfigSource s3, ConfigSource s4) {
         return new ConfigSources(List.of(s1, s2, s3, s4));
     }
 
-    /** Highest priority first */
+    /** Prioritised sources, highest priority first. */
     public static ConfigSources of(ConfigSource s1, ConfigSource s2, ConfigSource s3, ConfigSource s4, ConfigSource s5) {
         return new ConfigSources(List.of(s1, s2, s3, s4, s5));
     }
 
-    /** Highest priority first */
+    /** Prioritised sources, highest priority first. */
     public static ConfigSources of(ConfigSource s1, ConfigSource s2, ConfigSource s3, ConfigSource s4, ConfigSource s5, ConfigSource s6) {
         return new ConfigSources(List.of(s1, s2, s3, s4, s5, s6));
     }
 
-    /** Highest priority first */
+    /** Prioritised sources, highest priority first. */
     public static ConfigSources of(ConfigSource s1, ConfigSource s2, ConfigSource s3, ConfigSource s4, ConfigSource s5, ConfigSource s6, ConfigSource s7) {
         return new ConfigSources(List.of(s1, s2, s3, s4, s5, s6, s7));
     }
 
-    /** Highest priority first */
+    /** Prioritised sources, highest priority first. */
     public static ConfigSources of(ConfigSource s1, ConfigSource s2, ConfigSource s3, ConfigSource s4, ConfigSource s5, ConfigSource s6, ConfigSource s7, ConfigSource s8) {
         return new ConfigSources(List.of(s1, s2, s3, s4, s5, s6, s7, s8));
     }

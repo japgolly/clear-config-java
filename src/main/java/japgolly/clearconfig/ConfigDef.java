@@ -14,6 +14,11 @@ import japgolly.clearconfig.util.*;
 
 public interface ConfigDef<A> {
 
+    /**
+     * Executes the configuration definition against the provided sources.
+     *
+     * @return Success containing the parsed value, or Failure containing all accumulated error messages.
+     */
     public Either<Set<ErrorMsg>, A> run(ConfigSources sources);
 
     /** Marks this ConfigDef as looking up secret data that shouldn't be exposed in the config report. */
@@ -21,6 +26,10 @@ public interface ConfigDef<A> {
         return sources -> sources.secretly(() -> run(sources));
     }
 
+    /**
+     * Wraps the result of this ConfigDef with a {@link ConfigReport} that describes the configuration
+     * lookup process (used keys, sources, default values, etc.).
+     */
     public default ConfigDef<ConfigReportAndValue<A>> withReport() {
         final var self = this;
         return sources -> {
@@ -29,18 +38,30 @@ public interface ConfigDef<A> {
         };
     }
 
+    /**
+     * Composes this ConfigDef with another, ignoring the result of this one.
+     */
     public default <B> ConfigDef<B> andThen(ConfigDef<B> next) {
         return ConfigDef.apply(this, next, (a, b) -> b);
     }
 
+    /**
+     * Transforms the successfully-parsed value of this ConfigDef.
+     */
     public default <B> ConfigDef<B> map(Function<? super A, ? extends B> f) {
         return sources -> run(sources).map(f);
     }
 
+    /**
+     * Transforms all configuration keys looked up by this ConfigDef.
+     */
     public default ConfigDef<A> mapKeys(Function<String, String> f) {
         return sources -> run(sources.mapKeyQueries(f));
     }
 
+    /**
+     * Adds a prefix to all configuration keys looked up by this ConfigDef.
+     */
     public default ConfigDef<A> withKeyPrefix(String prefix) {
         return mapKeys(s -> prefix + s);
     }
@@ -66,6 +87,13 @@ public interface ConfigDef<A> {
         };
     }
 
+    /**
+     * Only runs this ConfigDef if the provided condition evaluates to true.
+     *
+     * @return Optional.of(A) if condition is true and A is successfully parsed;
+     *         Optional.empty() if condition is false;
+     *         Failure if condition evaluation fails or if A parsing fails.
+     */
     public default ConfigDef<Optional<A>> when(ConfigDef<Boolean> condition) {
         final var self = this;
         return sources -> {
@@ -78,6 +106,11 @@ public interface ConfigDef<A> {
         };
     }
 
+    /**
+     * Executes the configuration definition and returns the value, or throws an exception if any errors occurred.
+     *
+     * @throws UnsatisfiedConfigException if configuration is missing or invalid.
+     */
     public default A runOrThrow(ConfigSources sources) throws UnsatisfiedConfigException {
         return switch (run(sources)) {
             case Either.Success<Set<ErrorMsg>, A> s ->
@@ -89,10 +122,17 @@ public interface ConfigDef<A> {
 
     // =================================================================================================================
 
+    /**
+     * A ConfigDef that always succeeds with a null value and performs no lookups.
+     */
     public static ConfigDef<Void> unit() {
         return sources -> new Either.Success<>(null);
     }
 
+    /**
+     * Marks one or more keys as "external" dependencies, ensuring they appear in the configuration report
+     * even if they aren't explicitly used to construct a value.
+     */
     public static ConfigDef<Void> external(String... keys) {
         var result = unit();
         for (String key : keys) {
@@ -101,6 +141,9 @@ public interface ConfigDef<A> {
         return result;
     }
 
+    /**
+     * Composes multiple consumer-based ConfigDefs into a single one.
+     */
     @SafeVarargs
     public static <A> ConfigDef<Consumer<A>> consumer(ConfigDef<Consumer<A>>... fns) {
         return sources -> {

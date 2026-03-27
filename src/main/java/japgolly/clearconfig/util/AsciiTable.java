@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * A utility for generating ASCII tables, used primarily for configuration reports.
+ */
 public interface AsciiTable {
 
     public static String withHeader(List<String> header, List<List<String>> rows) {
