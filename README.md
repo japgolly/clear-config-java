@@ -1,6 +1,6 @@
 # ClearConfig for Java
 
-A modern, type-safe, and highly composable configuration library for Java 21+.
+A modern, type-safe, and highly-composable configuration library with a focus on runtime clarity.
 
 # What's special about this?
 
