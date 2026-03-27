@@ -66,6 +66,18 @@ public interface ConfigDef<A> {
         };
     }
 
+    public default ConfigDef<Optional<A>> when(ConfigDef<Boolean> condition) {
+        final var self = this;
+        return sources -> {
+            return condition.run(sources).flatMap(cond -> {
+                if (cond)
+                    return self.run(sources).map(Optional::of);
+                else
+                    return new Either.Success<>(Optional.empty());
+            });
+        };
+    }
+
     public default A runOrThrow(ConfigSources sources) throws UnsatisfiedConfigException {
         return switch (run(sources)) {
             case Either.Success<Set<ErrorMsg>, A> s ->

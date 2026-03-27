@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -197,5 +198,76 @@ public class ConfigReportTest {
                 +---------+-------+-----------+
                 """.trim();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testWhenTrue() throws Throwable {
+        var source = ConfigSource.ofMap("Test", Map.of("cond", "true", "val", "123"));
+        var sources = ConfigSources.of(source);
+        var cond = ConfigParser.Boolean.need("cond");
+        var def = ConfigParser.String.need("val").when(cond);
+        var result = def.withReport().runOrThrow(sources);
+        var actual = result.report().full();
+        var expected = """
+                2 sources (highest to lowest priority):
+                  - Test
+                  - Default
+
+                Used keys (2):
+                +------+------+---------+
+                | Key  | Test | Default |
+                +------+------+---------+
+                | cond | true |         |
+                | val  | 123  |         |
+                +------+------+---------+
+
+                Unused keys (0):
+                No data to report.
+                """.trim();
+        assertEquals(expected, actual);
+        assertEquals(Optional.of("123"), result.value());
+    }
+
+    @Test
+    public void testWhenFalse() throws Throwable {
+        var source = ConfigSource.ofMap("Test", Map.of("cond", "false", "val", "123"));
+        var sources = ConfigSources.of(source);
+        var cond = ConfigParser.Boolean.need("cond");
+        var def = ConfigParser.String.need("val").when(cond);
+        var result = def.withReport().runOrThrow(sources);
+        var actual = result.report().full();
+        var expected = """
+                2 sources (highest to lowest priority):
+                  - Test
+                  - Default
+
+                Used keys (1):
+                +------+-------+---------+
+                | Key  | Test  | Default |
+                +------+-------+---------+
+                | cond | false |         |
+                +------+-------+---------+
+
+                Unused keys (1):
+                +-----+------+
+                | Key | Test |
+                +-----+------+
+                | val | 123  |
+                +-----+------+
+                """.trim();
+        assertEquals(expected, actual);
+        assertEquals(Optional.empty(), result.value());
+    }
+
+    @Test
+    public void testWhenError() throws Throwable {
+        var source = ConfigSource.ofMap("Test", Map.of("cond", "not-a-bool", "val", "123"));
+        var sources = ConfigSources.of(source);
+        var cond = ConfigParser.Boolean.need("cond");
+        var def = ConfigParser.String.need("val").when(cond);
+        var result = def.withReport().run(sources);
+        assertEquals(new Either.Failure<>(Set.of(
+                new ErrorMsg("Failed to parse key \"cond\" with value \"not-a-bool\": Invalid boolean")
+        )), result);
     }
 }
