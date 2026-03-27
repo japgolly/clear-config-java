@@ -182,6 +182,25 @@ It's also common to want to namespace keys after composition.
 To do so, call `.withKeyPrefix(String prefix)`,
 or for more power, call `.mapKeys(Function<String, String> f)`.
 
+### Optional
+
+Use `.when()` to make config optional, based on a boolean key.
+
+For example, this will only create an `AppConfig` when `app.enabled` is specified as `true`.
+
+```java
+public record AppConfig(int port, String host, Duration timeout) {}
+
+ConfigDef<Optional<AppConfig>> appConfigDef =
+    ConfigDef.apply(
+        ConfigParser.Integer.getOrUse("port", 8080),
+        ConfigParser.String.need("host"),
+        ConfigParser.Duration.getOrParse("timeout", "1 min 30 sec"),
+        AppConfig::new)
+    .when(ConfigParser.Boolean.need("enabled"))
+    .withKeyPrefix("app.")
+```
+
 ### Setters
 
 What if you've got a config model that is mutable and expects you to call setters?
