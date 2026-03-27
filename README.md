@@ -75,8 +75,8 @@ public class QuickStart {
         // 3. Specify config sources
         ConfigSources sources = ConfigSources.of(
             ConfigSource.ofPropFileOnClasspath("demo.properties", true),
-            ConfigSource.Environment.filter(s -> s.contains("demo")),
-            ConfigSource.SystemProps.filter(s -> s.contains("demo"))
+            ConfigSource.Environment.filter(key -> key.contains("demo")),
+            ConfigSource.SystemProps.filter(key -> key.contains("demo"))
         );
 
         // 4. Load the config with a report
