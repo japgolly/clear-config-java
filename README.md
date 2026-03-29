@@ -182,7 +182,49 @@ It's also common to want to namespace keys after composition.
 To do so, call `.withKeyPrefix(String prefix)`,
 or for more power, call `.mapKeys(Function<String, String> f)`.
 
-### Optional
+Next you'll want to create an instance of `ConfigSources` that expresses where to look config up.
+Use `ConfigSources.of(…)` and specify each `ConfigSource` in order of highest priority down to the lowest.
+
+Choose sources from the following:
+
+```java
+ConfigSource.Environment
+ConfigSource.SystemProps
+ConfigSource.ofMap()
+ConfigSource.ofProperties()
+ConfigSource.ofPropFile()
+ConfigSource.ofPropFileOnClasspath()
+```
+
+Example:
+
+```java
+ConfigSources sources = ConfigSources.of(
+    ConfigSource.ofPropFileOnClasspath("demo.properties", true),
+    ConfigSource.Environment,
+    ConfigSource.SystemProps)
+);
+```
+
+Now we're ready for the last step.
+Either call `Either<Set<ErrorMsg>, A> run(ConfigSources sources)` and call `switch` on the result to handle both success and failure cases,
+or call `A runOrThrow(ConfigSources sources)` which throws a `UnsatisfiedConfigException` on failure.
+
+```java
+var result = configDef.runOrThrow(sources);
+```
+
+### Config Report
+
+In order to obtain a config report, simply call `.withReport()` on your `ConfigDef`.
+
+```java
+ConfigReportAndValue<AppConfig> result = configDef.withReport().runOrThrow(sources);
+
+System.out.println(result.report());
+```
+
+### Optional Config
 
 Use `.when()` to make config optional, based on a boolean key.
 
@@ -201,7 +243,7 @@ ConfigDef<Optional<AppConfig>> appConfigDef =
     .withKeyPrefix("app.")
 ```
 
-### Setters
+### Mutable Config
 
 What if you've got a config model that is mutable and expects you to call setters?
 
