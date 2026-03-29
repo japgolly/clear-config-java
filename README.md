@@ -200,15 +200,16 @@ Example:
 
 ```java
 ConfigSources sources = ConfigSources.of(
-    ConfigSource.ofPropFileOnClasspath("demo.properties", true),
+    ConfigSource.ofPropFileOnClasspath("demo.properties", true), // highest priority
     ConfigSource.Environment,
-    ConfigSource.SystemProps)
+    ConfigSource.SystemProps // lowest priority
 );
 ```
 
 Now we're ready for the last step.
-Either call `Either<Set<ErrorMsg>, A> run(ConfigSources sources)` and call `switch` on the result to handle both success and failure cases,
-or call `A runOrThrow(ConfigSources sources)` which throws a `UnsatisfiedConfigException` on failure.
+Either call
+- `run(ConfigSources sources)` and call `switch` on the result to handle both success and failure cases, or call
+- `runOrThrow(ConfigSources sources)` which throws a `UnsatisfiedConfigException` on failure.
 
 ```java
 var result = configDef.runOrThrow(sources);
@@ -219,7 +220,7 @@ var result = configDef.runOrThrow(sources);
 In order to obtain a config report, simply call `.withReport()` on your `ConfigDef`.
 
 ```java
-ConfigReportAndValue<AppConfig> result = configDef.withReport().runOrThrow(sources);
+ConfigReportAndValue<AppConfig> result = appConfigDef.withReport().runOrThrow(sources);
 
 System.out.println(result.report());
 ```
