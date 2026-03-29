@@ -127,7 +127,7 @@ ConfigParser.Boolean
 ConfigParser.ChronoUnit
 ConfigParser.Double
 ConfigParser.Duration
-ConfigParser.Enum()
+ConfigParser.Enum(…)
 ConfigParser.File
 ConfigParser.Float
 ConfigParser.InetAddress
@@ -137,7 +137,7 @@ ConfigParser.LocalDateTime
 ConfigParser.LocalTime
 ConfigParser.Long
 ConfigParser.OffsetDateTime
-ConfigParser.ofMap()
+ConfigParser.ofMap(…)
 ConfigParser.Pattern
 ConfigParser.Period
 ConfigParser.Short
@@ -166,7 +166,7 @@ Then you'll usually want to call one of the following methods:
 
 By now you'll have a `ConfigDef` value.
 You'll likely want to compose a number of them together.
-To do so, use `ConfigDef.apply(...)`, for example:
+To do so, use `ConfigDef.apply(…)`, for example:
 
 ```java
 public record AppConfig(int port, String host, Duration timeout) {}
@@ -190,10 +190,10 @@ Choose sources from the following:
 ```java
 ConfigSource.Environment
 ConfigSource.SystemProps
-ConfigSource.ofMap()
-ConfigSource.ofProperties()
-ConfigSource.ofPropFile()
-ConfigSource.ofPropFileOnClasspath()
+ConfigSource.ofMap(…)
+ConfigSource.ofProperties(…)
+ConfigSource.ofPropFile(…)
+ConfigSource.ofPropFileOnClasspath(…)
 ```
 
 Example:
@@ -268,7 +268,7 @@ var configDef = ConfigDef.consumer(
     ConfigParser.String.getOrUseAndSet  ("y", "default", Settable::setY),
     ConfigParser.String.getOrParseAndSet("z", "default", Settable::setZ));
 
-var sources = ConfigSources.of(...);
+var sources = ConfigSources.of(…);
 var consumer = configDef.runOrThrow(sources);
 
 var s = new Settable();
