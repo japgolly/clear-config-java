@@ -1,6 +1,8 @@
 package japgolly.clearconfig;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.file.Path;
 import java.net.InetAddress;
 import java.net.URI;
@@ -300,5 +302,11 @@ public interface ConfigParser<A> {
 
     public static final ConfigParser<Path> Path =
       String.map(java.nio.file.Path::of);
+
+    public static final ConfigParser<BigDecimal> BigDecimal =
+      String.map(java.math.BigDecimal::new);
+
+    public static final ConfigParser<BigInteger> BigInteger =
+      String.map(java.math.BigInteger::new);
 
 }

@@ -123,6 +123,8 @@ Unused keys (2):
 First start by choosing the type of your target config value:
 
 ```txt
+ConfigParser.BigDecimal
+ConfigParser.BigInteger
 ConfigParser.Boolean
 ConfigParser.ChronoUnit
 ConfigParser.Double

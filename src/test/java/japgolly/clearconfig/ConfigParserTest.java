@@ -206,4 +206,14 @@ public class ConfigParserTest {
         assertPass(false, ConfigParser.String.exists("key").run(srcs0));
         assertPass(true, ConfigParser.String.exists("key").run(srcs1));
     }
+
+    @Test
+    public void bigDecimal() {
+        assertPass(new java.math.BigDecimal("123.456"), ConfigParser.BigDecimal.parse("123.456"));
+    }
+
+    @Test
+    public void bigInteger() {
+        assertPass(new java.math.BigInteger("12345678901234567890"), ConfigParser.BigInteger.parse("12345678901234567890"));
+    }
 }
