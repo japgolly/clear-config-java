@@ -138,6 +138,7 @@ ConfigParser.LocalTime
 ConfigParser.Long
 ConfigParser.OffsetDateTime
 ConfigParser.ofMap(…)
+ConfigParser.Path
 ConfigParser.Pattern
 ConfigParser.Period
 ConfigParser.Short

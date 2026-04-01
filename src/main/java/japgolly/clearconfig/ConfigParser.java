@@ -1,6 +1,7 @@
 package japgolly.clearconfig;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
@@ -296,5 +297,8 @@ public interface ConfigParser<A> {
 
     public static final ConfigParser<Pattern> Pattern =
       String.map(java.util.regex.Pattern::compile);
+
+    public static final ConfigParser<Path> Path =
+      String.map(java.nio.file.Path::of);
 
 }

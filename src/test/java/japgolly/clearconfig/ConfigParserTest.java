@@ -160,6 +160,11 @@ public class ConfigParserTest {
     }
 
     @Test
+    public void path() {
+        assertPass(java.nio.file.Path.of("/tmp/abc"), ConfigParser.Path.parse("/tmp/abc"));
+    }
+
+    @Test
     public void pattern() {
         var s = "a.*b";
         assertEquals(s, ConfigParser.Pattern.parse(s).getOrThrow().pattern());
