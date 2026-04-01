@@ -9,6 +9,9 @@ import java.net.URI;
 import java.net.URL;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -162,6 +165,38 @@ public interface ConfigParser<A> {
 
     public default <B> ConfigDef<Consumer<B>> needAndSet(String key, BiConsumer<B, A> f) {
         return sources -> need(key).run(sources).map(a -> b -> f.accept(b, a));
+    }
+
+    // ================================================================================================================
+
+    public default ConfigParser<List<A>> list() {
+        return list(",");
+    }
+
+    public default ConfigParser<List<A>> list(String delimiterRegex) {
+        return s -> {
+            var parts = s.split(delimiterRegex);
+            var results = new ArrayList<A>();
+            for (var part : parts) {
+                switch (parse(part.trim())) {
+                    case Either.Success<ErrorMsg, A> success -> {
+                        results.add(success.value());
+                    }
+                    case Either.Failure<ErrorMsg, A> failure -> {
+                        return new Either.Failure<>(failure.failure());
+                    }
+                }
+            }
+            return new Either.Success<>(results);
+        };
+    }
+
+    public default ConfigParser<Set<A>> set() {
+        return list().map(HashSet::new);
+    }
+
+    public default ConfigParser<Set<A>> set(String delimiterRegex) {
+        return list(delimiterRegex).map(HashSet::new);
     }
 
     // ================================================================================================================

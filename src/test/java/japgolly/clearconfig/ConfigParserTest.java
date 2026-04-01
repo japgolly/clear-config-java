@@ -6,7 +6,9 @@ import org.junit.Test;
 import java.net.InetAddress;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class ConfigParserTest {
@@ -178,6 +180,34 @@ public class ConfigParserTest {
         assertPass(TestEnum.FOO, p.parse("FOO"));
         assertPass(TestEnum.BAR, p.parse("BAR"));
         assertFail("Invalid TestEnum", p.parse("BAZ"));
+    }
+
+    @Test
+    public void list() {
+        var p = ConfigParser.Integer.list();
+        assertPass(List.of(1, 2, 3, 2), p.parse("1,2,3,2"));
+        assertPass(List.of(1, 2, 3), p.parse(" 1, 2,  3 "));
+        assertFail("NumberFormatException: For input string: \"x\"", p.parse("1,x,3"));
+    }
+
+    @Test
+    public void listCustomDelimiter() {
+        var p = ConfigParser.String.list("\\|");
+        assertPass(List.of("a", "b", "c"), p.parse("a|b|c"));
+    }
+
+    @Test
+    public void set() {
+        var p = ConfigParser.Integer.set();
+        assertPass(Set.of(1, 2, 3), p.parse("1,2,3,2"));
+        assertPass(Set.of(1, 2, 3), p.parse(" 1, 2,  3 "));
+        assertFail("NumberFormatException: For input string: \"x\"", p.parse("1,x,3"));
+    }
+
+    @Test
+    public void setCustomDelimiter() {
+        var p = ConfigParser.String.set("\\|");
+        assertPass(Set.of("a", "b", "c"), p.parse("a|b|c|a"));
     }
 
     @Test
