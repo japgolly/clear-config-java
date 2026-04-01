@@ -45,11 +45,11 @@ public class ConfigReport {
     }
 
     public String unused() {
-        var seenKeys = cfgSrcs.seen().keySet();
-
         var allUnusedKeys = cfgSrcs.sources.stream()
-                .flatMap(s -> s.all().keySet().stream())
-                .filter(k -> !seenKeys.contains(k))
+                .flatMap(s -> {
+                    var hits = cfgSrcs.sourceHits(s);
+                    return s.all().keySet().stream().filter(k -> !hits.contains(k));
+                })
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
@@ -80,7 +80,10 @@ public class ConfigReport {
 
     private List<String> unseenRow(List<ConfigSource> activeSources, String key) {
         var secret = Internals.IMPLICITLY_SECRET.matcher(key).matches();
-        var row = activeSources.stream().map(s -> cell(s.get(key), secret)).collect(Collectors.toList());
+        var row = activeSources.stream().map(s -> {
+            var v = cfgSrcs.sourceHits(s).contains(key) ? null : s.get(key);
+            return cell(v, secret);
+        }).collect(Collectors.toList());
         row.addFirst(key);
         return row;
     }

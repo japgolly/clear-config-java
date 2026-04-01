@@ -2,9 +2,12 @@ package japgolly.clearconfig;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -25,6 +28,7 @@ public final class ConfigSources {
 
     private static final class State {
         final Map<String, KeyCtx> seen = new HashMap<>();
+        final Map<ConfigSource, Set<String>> sourceHits = new IdentityHashMap<>();
         boolean inSecretBlock = false;
     }
 
@@ -35,6 +39,10 @@ public final class ConfigSources {
 
     Map<String, KeyCtx> seen() {
         return state.seen;
+    }
+
+    Set<String> sourceHits(ConfigSource s) {
+        return state.sourceHits.getOrDefault(s, Collections.emptySet());
     }
 
     /** @param sources Highest priority first */
@@ -91,20 +99,29 @@ public final class ConfigSources {
         ctx.defaultValue = defaultValue;
 
         // Parse the first matching value
+        Either<ErrorMsg, Optional<A>> result = null;
         for (ConfigSource src : sources) {
-            final var value = src.get(key);
-            if (value != null) {
-                return switch (parser.parse(value)) {
-                    case Either.Success<ErrorMsg, A> s ->
-                        s.map(a -> Optional.of(a));
-                    case Either.Failure<ErrorMsg, A> f -> {
-                        var newErrMsg = f.failure().addKeyValueContext(key, value);
-                        yield new Either.Failure<>(newErrMsg);
-                    }
-                };
+
+            final var actualKey = src.getActualKey(key);
+            if (actualKey != null) {
+                state.sourceHits.computeIfAbsent(src, s -> new HashSet<>()).add(actualKey);
+            }
+
+            if (result == null) {
+                final var value = src.get(key);
+                if (value != null) {
+                    result = switch (parser.parse(value)) {
+                        case Either.Success<ErrorMsg, A> s ->
+                                new Either.Success<>(Optional.of(s.value()));
+                        case Either.Failure<ErrorMsg, A> f -> {
+                            var newErrMsg = f.failure().addKeyValueContext(key, value);
+                            yield new Either.Failure<>(newErrMsg);
+                        }
+                    };
+                }
             }
         }
-        return new Either.Success<>(Optional.empty());
+        return (result != null) ? result : new Either.Success<>(Optional.empty());
     }
 
     /**
