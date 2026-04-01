@@ -2,9 +2,12 @@ package japgolly.clearconfig;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -25,7 +28,7 @@ public final class ConfigSources {
 
     private static final class State {
         final Map<String, KeyCtx> seen = new HashMap<>();
-        final Map<ConfigSource, java.util.Set<String>> sourceHits = new java.util.IdentityHashMap<>();
+        final Map<ConfigSource, Set<String>> sourceHits = new IdentityHashMap<>();
         boolean inSecretBlock = false;
     }
 
@@ -38,8 +41,8 @@ public final class ConfigSources {
         return state.seen;
     }
 
-    java.util.Set<String> hits(ConfigSource s) {
-        return state.sourceHits.getOrDefault(s, java.util.Collections.emptySet());
+    Set<String> sourceHits(ConfigSource s) {
+        return state.sourceHits.getOrDefault(s, Collections.emptySet());
     }
 
     /** @param sources Highest priority first */
@@ -98,9 +101,10 @@ public final class ConfigSources {
         // Parse the first matching value
         Either<ErrorMsg, Optional<A>> result = null;
         for (ConfigSource src : sources) {
+
             final var actualKey = src.getActualKey(key);
             if (actualKey != null) {
-                state.sourceHits.computeIfAbsent(src, s -> new java.util.HashSet<>()).add(actualKey);
+                state.sourceHits.computeIfAbsent(src, s -> new HashSet<>()).add(actualKey);
             }
 
             if (result == null) {
