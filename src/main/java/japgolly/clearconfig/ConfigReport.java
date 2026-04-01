@@ -48,8 +48,9 @@ public class ConfigReport {
         var seenKeys = cfgSrcs.seen().keySet();
 
         var allUnusedKeys = cfgSrcs.sources.stream()
-                .flatMap(s -> s.all().keySet().stream())
-                .filter(k -> !seenKeys.contains(k))
+                .flatMap(s -> s.all().keySet().stream()
+                        .filter(k -> !seenKeys.contains(k) && !cfgSrcs.hits(s).contains(k))
+                        .map(k -> k)) // Ensure unique key per source
                 .distinct()
                 .sorted()
                 .collect(Collectors.toList());
@@ -80,7 +81,10 @@ public class ConfigReport {
 
     private List<String> unseenRow(List<ConfigSource> activeSources, String key) {
         var secret = Internals.IMPLICITLY_SECRET.matcher(key).matches();
-        var row = activeSources.stream().map(s -> cell(s.get(key), secret)).collect(Collectors.toList());
+        var row = activeSources.stream().map(s -> {
+            var v = cfgSrcs.hits(s).contains(key) ? null : s.get(key);
+            return cell(v, secret);
+        }).collect(Collectors.toList());
         row.addFirst(key);
         return row;
     }

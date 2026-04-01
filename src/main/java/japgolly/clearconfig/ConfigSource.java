@@ -45,6 +45,14 @@ public class ConfigSource {
     }
 
     /**
+     * Returns the actual key that would be used to look up a value in this source's internal map.
+     * Returns null if no such key exists.
+     */
+    public String getActualKey(String key) {
+        return all().containsKey(key) ? key : null;
+    }
+
+    /**
      * Returns a new ConfigSource that applies the given transformation to all keys looked up.
      */
     public ConfigSource mapKeyQueries(Function<String, String> f) {
@@ -53,6 +61,11 @@ public class ConfigSource {
             @Override
             public String get(String key) {
                 return self.get(f.apply(key));
+            }
+
+            @Override
+            public String getActualKey(String key) {
+                return self.getActualKey(f.apply(key));
             }
         };
     }
@@ -67,6 +80,11 @@ public class ConfigSource {
             public String get(String key) {
                 var value = self.get(key);
                 return value == null ? null : f.apply(value);
+            }
+
+            @Override
+            public String getActualKey(String key) {
+                return self.getActualKey(key);
             }
         };
     }
