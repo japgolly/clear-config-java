@@ -270,4 +270,48 @@ public class ConfigReportTest {
                 new ErrorMsg("Failed to parse key \"cond\" with value \"not-a-bool\": Invalid boolean")
         )), result);
     }
+
+    // This test just demonstrates the status quo.
+    // It's still unclear to me what the best outcome is here.
+    @Test
+    public void testWithDifferentKeySpecs() throws Throwable {
+        var env = ConfigSource.ofMap("Env", Map.of(
+                        "TEST_NEED", "789",
+                        "TEST_GETORUSE", "7",
+                        "TEST_UNUSED", "666"
+                )).mapKeyQueries(s -> s.toUpperCase().replace('.', '_'));
+        var sys = ConfigSource.ofMap("Sys", Map.of(
+                        "test.need", "456",
+                        "test.getOrUse", "0",
+                        "TEST_NEED", "unused"));
+        var sources = ConfigSources.of(env, sys);
+        var configDef = configDefWithDefaults.withKeyPrefix("test_").mapKeys(s -> s.replace('_', '.'));
+        var result = configDef.withReport().runOrThrow(sources);
+        var actual = result.report().full();
+        var expected = """
+                3 sources (highest to lowest priority):
+                  - Env
+                  - Sys
+                  - Default
+
+                Used keys (4):
+                +-----------------+-----+-----+---------+
+                | Key             | Env | Sys | Default |
+                +-----------------+-----+-----+---------+
+                | test.get        |     |     |         |
+                | test.getOrParse |     |     | 789     |
+                | test.getOrUse   | 7   | 0   | 123     |
+                | test.need       | 789 | 456 |         |
+                +-----------------+-----+-----+---------+
+
+                Unused keys (2):
+                +-------------+-----+--------+
+                | Key         | Env | Sys    |
+                +-------------+-----+--------+
+                | TEST_NEED   |     | unused |
+                | TEST_UNUSED | 666 |        |
+                +-------------+-----+--------+
+                """.trim();
+        assertEquals(expected, actual);
+    }
 }
