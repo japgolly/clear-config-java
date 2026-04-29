@@ -169,6 +169,20 @@ public interface ConfigParser<A> {
 
     // ================================================================================================================
 
+    public default ConfigParser<A> ensuring(Function<? super A, Optional<ErrorMsg>> validator) {
+        return flatMap(a -> {
+            var error = validator.apply(a);
+            if (error.isPresent())
+                return new Either.Failure<>(error.get());
+            else
+                return new Either.Success<>(a);
+        });
+    }
+
+    public default ConfigParser<A> ensuring(Function<? super A, Boolean> validator, ErrorMsg errorMsgWhenFalse) {
+        return ensuring(a -> validator.apply(a) ? Optional.empty() : Optional.of(errorMsgWhenFalse));
+    }
+
     public default ConfigParser<List<A>> list() {
         return list(",");
     }

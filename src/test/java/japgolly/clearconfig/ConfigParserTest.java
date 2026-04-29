@@ -246,4 +246,11 @@ public class ConfigParserTest {
     public void bigInteger() {
         assertPass(new java.math.BigInteger("12345678901234567890"), ConfigParser.BigInteger.parse("12345678901234567890"));
     }
+
+    @Test
+    public void ensuring() {
+        var parser = ConfigParser.Integer.ensuring(n -> n > 0, new ErrorMsg("Value must be positive"));
+        assertPass(5, parser.parse("5"));
+        assertFail("Value must be positive", parser.parse("-5"));
+    }
 }
