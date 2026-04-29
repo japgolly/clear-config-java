@@ -126,7 +126,14 @@ public interface ConfigDef<A> {
      * A ConfigDef that always succeeds with a null value and performs no lookups.
      */
     public static ConfigDef<Void> unit() {
-        return sources -> new Either.Success<>(null);
+        return provide(null);
+    }
+
+    /**
+     * A ConfigDef that always succeeds with a given value and performs no lookups.
+     */
+    public static <A> ConfigDef<A> provide(A a) {
+        return sources -> new Either.Success<>(a);
     }
 
     /**
