@@ -42,7 +42,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
   <groupId>com.github.japgolly.clearconfig</groupId>
   <artifactId>core-java</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
@@ -354,11 +354,13 @@ ConfigParser<Integer> binaryParser = s -> {
 
 #### Transforming existing parsers
 
-You can use `map`, `flatMap`, and `preprocess` to adapt existing parsers.
+You can use the following methods to adapt existing parsers.
 
-* `map(A -> B)`: Transform the successfully-parsed value.
-* `flatMap(A -> Either<ErrorMsg, B>)`: Transform the successfully-parsed value.
+* `map(A -> B)`: Transform the successfully parsed value.
+* `flatMap(A -> Either<ErrorMsg, B>)`: Transform the successfully parsed value.
 * `preprocess(String -> String)`: Transform the input string *before* it is parsed.
+* `ensuring(A -> Optional<ErrorMsg>)`: Ensure the successfully parsed value passes a given predicate.
+* `ensuring(A -> Boolean, ErrorMsg)`: Ensure the successfully parsed value passes a given predicate.
 
 Example using `map` (unchecked exceptions are automatically caught and handled):
 
@@ -385,6 +387,12 @@ ConfigParser<Integer> protocolParser = ConfigParser
     .ofMap(protocolMap)
     .preprocess(String::trim)
     .preprocess(String::toUpperCase);
+```
+
+Example using `ensuring`:
+
+```java
+ConfigParser.Integer.ensuring(n -> n > 0, new ErrorMsg("Value must be > 0"));
 ```
 
 ### Logback
